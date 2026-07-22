@@ -41,5 +41,12 @@ export default tseslint.config(
     },
   },
 
+  {
+    files: ["apps/server/prisma.config.ts"],
+    rules: {
+      "@typescript-eslint/ban-ts-comment": "off",
+    },
+  },
+
   eslintConfigPrettier
 );
