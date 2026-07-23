@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 
 import { PollService } from "@/services/poll.service";
+import { mapPollToResponse } from "@/mappers/poll.mapper";
 
 const pollService = new PollService();
 
@@ -14,6 +15,6 @@ export class PollController {
   async findById(req: Request, res: Response): Promise<void> {
     const poll = await pollService.findById(req.params.id);
 
-    res.json(poll);
+    res.json(mapPollToResponse(poll));
   }
 }

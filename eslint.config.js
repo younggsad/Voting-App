@@ -47,6 +47,7 @@ export default tseslint.config(
       "@typescript-eslint/ban-ts-comment": "off",
     },
   },
+
   {
     rules: {
       "@typescript-eslint/no-unused-vars": [
