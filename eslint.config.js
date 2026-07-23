@@ -39,6 +39,21 @@ export default tseslint.config(
       ecmaVersion: 2022,
       globals: globals.node,
     },
+    rules: {
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          argsIgnorePattern: "^_",
+        },
+      ],
+    },
+  },
+
+  {
+    files: ["apps/server/prisma.config.ts"],
+    rules: {
+      "@typescript-eslint/ban-ts-comment": "off",
+    },
   },
 
   eslintConfigPrettier

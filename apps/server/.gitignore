@@ -1,0 +1,17 @@
+# Dependencies
+node_modules/
+
+# Environment variables
+.env
+.env.*
+
+# Prisma generated client
+apps/server/src/generated/prisma/
+
+# AI / IDE configs
+.agents/
+.claude/
+.windsurf/
+
+# Build output
+dist/
