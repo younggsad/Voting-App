@@ -1,5 +1,7 @@
 import cors from "cors";
 import express from "express";
+import pollRoutes from "@/routes/poll.routes";
+import { errorMiddleware } from "@/middlewares/error.middleware";
 
 export const app = express();
 
@@ -16,3 +18,6 @@ app.get("/health", (_req, res) => {
     status: "ok",
   });
 });
+
+app.use("/polls", pollRoutes);
+app.use(errorMiddleware);
