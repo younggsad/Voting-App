@@ -1,10 +1,11 @@
 import { NotFoundError } from "@/errors/not-found.error";
 import { prisma } from "@/lib/prisma";
+import { mapPollToResponse } from "@/mappers/poll.mapper";
 import type { CreatePollDto } from "@/validators/poll.validator";
 
 export class PollService {
   async create(data: CreatePollDto) {
-    return prisma.poll.create({
+    const poll = await prisma.poll.create({
       data: {
         title: data.title,
         description: data.description,
@@ -20,9 +21,19 @@ export class PollService {
       },
 
       include: {
-        options: true,
+        options: {
+          include: {
+            _count: {
+              select: {
+                votes: true,
+              },
+            },
+          },
+        },
       },
     });
+
+    return mapPollToResponse(poll);
   }
 
   async findById(id: string) {
@@ -48,6 +59,6 @@ export class PollService {
       throw new NotFoundError("Poll not found");
     }
 
-    return poll;
+    return mapPollToResponse(poll);
   }
 }
