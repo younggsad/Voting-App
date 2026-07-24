@@ -1,12 +1,22 @@
+import type { ErrorCode } from "./codes";
+
 export class AppError extends Error {
-  statusCode: number;
-  isOperational: boolean;
+  // Ошибка ожидаемая и обработанная приложением
+  public readonly isOperational = true;
 
-  constructor(message: string, statusCode: number) {
+  constructor(
+    message: string,
+
+    // HTTP статус ошибки
+    public readonly statusCode: number,
+
+    // Код ошибки для клиента
+    public readonly code: ErrorCode,
+
+    // Дополнительные данные ошибки
+    public readonly details?: unknown
+  ) {
     super(message);
-
-    this.statusCode = statusCode;
-    this.isOperational = true;
 
     Error.captureStackTrace(this, this.constructor);
   }

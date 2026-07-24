@@ -7,13 +7,20 @@ export const createPollSchema = z.object({
     .min(3, "Title must contain at least 3 characters")
     .max(100, "Title must contain at most 100 characters"),
 
-  description: z.string().trim().max(500, "Description is too long").optional(),
+  description: z
+    .string()
+    .trim()
+    .max(500, "Description is too long")
+    .optional()
+    .transform((value) => value || null),
 
   isAnonymous: z.boolean(),
 
   isMultipleChoice: z.boolean(),
 
-  expiresAt: z.iso.datetime(),
+  expiresAt: z.iso
+    .datetime()
+    .refine((date) => new Date(date) > new Date(), "Expiration date must be in the future"),
 
   options: z
     .array(
@@ -22,7 +29,17 @@ export const createPollSchema = z.object({
       })
     )
     .min(2, "Poll must contain at least 2 options")
-    .max(10, "Poll can contain at most 10 options"),
+    .max(10, "Poll can contain at most 10 options")
+    .refine(
+      (options) => {
+        const values = options.map((option) => option.text.toLowerCase());
+
+        return new Set(values).size === values.length;
+      },
+      {
+        message: "Options must be unique",
+      }
+    ),
 });
 
 export type CreatePollDto = z.infer<typeof createPollSchema>;

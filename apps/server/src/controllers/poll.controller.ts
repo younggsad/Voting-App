@@ -1,19 +1,26 @@
 import type { Request, Response } from "express";
 
 import { PollService } from "@/services/poll.service";
-
-const pollService = new PollService();
+import type { CreatePollDto } from "@/validators/poll.validator";
 
 export class PollController {
-  async create(req: Request, res: Response) {
-    const poll = await pollService.create(req.body);
+  // Сервис, содержащий бизнес-логику работы с опросами
+  private readonly pollService = new PollService();
 
-    return res.status(201).json(poll);
-  }
+  // Создание нового опроса
+  create = async (
+    req: Request<Record<string, never>, unknown, CreatePollDto>,
+    res: Response
+  ): Promise<void> => {
+    const poll = await this.pollService.create(req.body);
 
-  async findById(req: Request, res: Response) {
-    const poll = await pollService.findById(req.params.id);
+    res.status(201).json(poll);
+  };
 
-    return res.json(poll);
-  }
+  // Получение опроса по идентификатору
+  findById = async (req: Request<{ id: string }, unknown>, res: Response): Promise<void> => {
+    const poll = await this.pollService.findById(req.params.id);
+
+    res.json(poll);
+  };
 }

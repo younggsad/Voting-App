@@ -1,23 +1,23 @@
-import { AppError } from "@/errors/app.error";
 import type { NextFunction, Request, Response } from "express";
-import type { ZodObject } from "zod";
+import type { ZodObject, ZodRawShape } from "zod";
 
-export class BadRequestError extends AppError {
-  constructor(message = "Bad request") {
-    super(message, 400);
-  }
-}
+import { ERROR_CODES } from "@/errors/codes";
+import { BadRequestError } from "@/errors/bad-request.error";
 
 export const validate =
-  <T extends ZodObject>(schema: T) =>
-  (req: Request, res: Response, next: NextFunction) => {
+  <T extends ZodObject<ZodRawShape>>(schema: T) =>
+  (req: Request, _res: Response, next: NextFunction) => {
     const result = schema.safeParse(req.body);
 
     if (!result.success) {
-      throw new BadRequestError(JSON.stringify(result.error.issues));
+      throw new BadRequestError(
+        "Validation failed",
+        result.error.issues,
+        ERROR_CODES.VALIDATION_ERROR
+      );
     }
 
     req.body = result.data;
 
-    next();
+    return next();
   };
