@@ -37,5 +37,5 @@ coverage
 # OS
 Thumbs.db
 
-# TanStack Router generated files
-src/routeTree.gen.ts
+# TanStack Router cache
+apps/client/.tanstack/
