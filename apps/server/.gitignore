@@ -5,13 +5,26 @@ node_modules/
 .env
 .env.*
 
+# Build output
+dist/
+build/
+
 # Prisma generated client
 apps/server/src/generated/prisma/
 
-# AI / IDE configs
+# Coverage
+coverage/
+
+# Logs
+*.log
+
+# IDE / AI tools
+.vscode/
+.idea/
 .agents/
 .claude/
 .windsurf/
 
-# Build output
-dist/
+# OS files
+.DS_Store
+Thumbs.db
