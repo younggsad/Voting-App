@@ -1,90 +1,47 @@
-import { useForm, useFieldArray } from "react-hook-form";
-
-import { zodResolver } from "@hookform/resolvers/zod";
-
-import { pollSchema, type PollFormValues } from "../schemas/poll.schema";
-
-import { useCreatePoll } from "../hooks/useCreatePoll";
-
-import { useNavigate } from "@tanstack/react-router";
+import { PollOptions } from "./PollOptions";
+import { PollSettings } from "./PollSettings";
+import { usePollForm } from "../hooks/usePollForm";
 
 export function PollForm() {
-  const { register, control, handleSubmit } = useForm<PollFormValues>({
-    resolver: zodResolver(pollSchema),
+  const {
+    register,
+    handleSubmit,
+    errors,
 
-    defaultValues: {
-      title: "",
-      description: "",
-      isAnonymous: false,
-      isMultipleChoice: false,
-      expiresAt: "",
-      options: [
-        {
-          text: "",
-        },
-        {
-          text: "",
-        },
-      ],
-    },
-  });
+    fields,
+    append,
+    remove,
 
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: "options",
-  });
+    onSubmit,
 
-  const navigate = useNavigate();
-  const mutation = useCreatePoll();
-
-  const onSubmit = (data: PollFormValues) => {
-    mutation.mutate(
-      {
-        ...data,
-        expiresAt: new Date(data.expiresAt).toISOString(),
-      },
-      {
-        onSuccess: (poll) => {
-          navigate({
-            to: "/poll/$id",
-            params: {
-              id: poll.id,
-            },
-          });
-        },
-      }
-    );
-  };
+    isPending,
+  } = usePollForm();
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <input {...register("title")} placeholder="Title" />
+    <section>
+      <h2>Create poll</h2>
 
-      <textarea {...register("description")} placeholder="Description" />
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div>
+          <label htmlFor="title">Title</label>
 
-      {fields.map((field, index) => (
-        <div key={field.id}>
-          <input {...register(`options.${index}.text`)} />
-
-          <button type="button" onClick={() => remove(index)}>
-            Remove
-          </button>
+          <input id="title" type="text" placeholder="Enter poll title" {...register("title")} />
         </div>
-      ))}
 
-      <input type="datetime-local" {...register("expiresAt")} />
-      <button
-        type="button"
-        onClick={() =>
-          append({
-            text: "",
-          })
-        }
-      >
-        Add option
-      </button>
+        <PollSettings register={register} errors={errors} />
 
-      <button type="submit">Create</button>
-    </form>
+        <PollOptions
+          fields={fields}
+          register={register}
+          append={append}
+          remove={remove}
+          errors={errors}
+        />
+
+        <button type="submit" disabled={isPending}>
+          {isPending ? "Creating..." : "Create poll"}
+        </button>
+      </form>
+    </section>
   );
 }

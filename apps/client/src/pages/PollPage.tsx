@@ -1,7 +1,10 @@
 import { useParams } from "@tanstack/react-router";
 
-import { usePoll } from "@/features/polls/hooks/usePoll";
 import { PollResults } from "@/features/polls/components/PollResults";
+import { usePoll } from "@/features/polls/hooks/usePoll";
+
+import { Loading } from "@/shared/ui/Loading";
+import { ErrorMessage } from "@/shared/ui/ErrorMessage";
 
 export function PollPage() {
   const { id } = useParams({
@@ -11,12 +14,16 @@ export function PollPage() {
   const { data: poll, isPending, isError } = usePoll(id);
 
   if (isPending) {
-    return <p>Loading...</p>;
+    return <Loading />;
   }
 
   if (isError || !poll) {
-    return <p>Poll not found</p>;
+    return <ErrorMessage message="Poll not found" />;
   }
 
-  return <PollResults poll={poll} />;
+  return (
+    <main>
+      <PollResults poll={poll} />
+    </main>
+  );
 }

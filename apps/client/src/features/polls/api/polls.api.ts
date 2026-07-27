@@ -1,29 +1,20 @@
 import { api } from "@/shared/api/client";
 
-import type { Poll } from "../types";
+import type { CreatePollRequest } from "@/features/polls/types/poll.dto";
+import type { Poll } from "@/features/polls/types";
 
-export interface CreatePollRequest {
-  title: string;
-  description?: string;
+const POLLS_ENDPOINT = "/polls";
 
-  isAnonymous: boolean;
-  isMultipleChoice: boolean;
-
-  expiresAt: string;
-
-  options: {
-    text: string;
-  }[];
-}
-
+// Создание нового опроса
 export const createPoll = async (data: CreatePollRequest): Promise<Poll> => {
-  const response = await api.post<Poll>("/polls", data);
+  const { data: poll } = await api.post<Poll>(POLLS_ENDPOINT, data);
 
-  return response.data;
+  return poll;
 };
 
+// Получение опроса по id
 export const getPollById = async (id: string): Promise<Poll> => {
-  const response = await api.get<Poll>(`/polls/${id}`);
+  const { data: poll } = await api.get<Poll>(`${POLLS_ENDPOINT}/${id}`);
 
-  return response.data;
+  return poll;
 };

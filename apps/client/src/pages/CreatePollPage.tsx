@@ -3,9 +3,11 @@ import { PollForm } from "@/features/polls/components/PollForm";
 export function CreatePollPage() {
   return (
     <main>
-      <h1>Create poll</h1>
+      <section aria-labelledby="create-poll-title">
+        <h1 id="create-poll-title">Create poll</h1>
 
-      <PollForm />
+        <PollForm />
+      </section>
     </main>
   );
 }

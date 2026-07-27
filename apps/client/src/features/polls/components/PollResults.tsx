@@ -1,23 +1,26 @@
 import type { Poll } from "../types";
 
-interface Props {
+import { PollOptionResult } from "./PollOptionResult";
+
+interface PollResultsProps {
   poll: Poll;
 }
 
-export function PollResults({ poll }: Props) {
+// Отображение результатов опроса
+export function PollResults({ poll }: PollResultsProps) {
   return (
-    <div>
-      <h1>{poll.title}</h1>
+    <section>
+      <header>
+        <h1>{poll.title}</h1>
 
-      {poll.description && <p>{poll.description}</p>}
+        {poll.description && <p>{poll.description}</p>}
+      </header>
 
       <ul>
         {poll.options.map((option) => (
-          <li key={option.id}>
-            {option.text}: {option.votesCount}
-          </li>
+          <PollOptionResult key={option.id} option={option} />
         ))}
       </ul>
-    </div>
+    </section>
   );
 }
