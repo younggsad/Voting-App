@@ -1,13 +1,14 @@
-import type { NextFunction, Request, Response } from "express";
+import type { NextFunction, Request, RequestHandler, Response } from "express";
 
-export type AsyncController<TRequest extends Request = Request> = (
-  req: TRequest,
+// Тип асинхронного контроллера с поддержкой любых типов Request
+type AsyncController<T extends Request = Request> = (
+  req: T,
   res: Response,
   next: NextFunction
 ) => Promise<void>;
 
 export const asyncHandler =
-  <TRequest extends Request>(controller: AsyncController<TRequest>) =>
-  (req: TRequest, res: Response, next: NextFunction): void => {
-    Promise.resolve(controller(req, res, next)).catch(next);
+  <T extends Request = Request>(controller: AsyncController<T>): RequestHandler =>
+  (req, res, next) => {
+    Promise.resolve(controller(req as T, res, next)).catch(next);
   };
