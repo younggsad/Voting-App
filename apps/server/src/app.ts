@@ -3,6 +3,7 @@ import express from "express";
 import helmet from "helmet";
 
 import pollRoutes from "@/routes/poll.routes";
+import voteRoutes from "@/routes/vote.routes";
 import { errorMiddleware } from "@/middlewares/error.middleware";
 import { NotFoundError } from "@/errors/not-found.error";
 
@@ -34,3 +35,5 @@ app.use((_req, _res, next) => {
 
 // Централизованный обработчик ошибок
 app.use(errorMiddleware);
+
+app.use("/polls", voteRoutes);

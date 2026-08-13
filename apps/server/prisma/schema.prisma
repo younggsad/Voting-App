@@ -15,41 +15,54 @@ model Poll {
   isMultipleChoice Boolean  @default(false)
   expiresAt        DateTime
 
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  options          Option[]
+  options Option[]
   votes   Vote[]
 
   @@map("polls")
 }
 
 model Option {
-  id        String   @id @default(uuid())
-  text      String
+  id   String @id @default(uuid())
+  text String
 
-  pollId    String
-  poll      Poll     @relation(fields: [pollId], references: [id], onDelete: Cascade)
+  pollId String
+  poll   Poll   @relation(fields: [pollId], references: [id], onDelete: Cascade)
 
-  votes     Vote[]
+  voteOptions VoteOption[]
 
   @@index([pollId])
   @@map("options")
 }
 
 model Vote {
-  id         String   @id @default(uuid())
+  id String @id @default(uuid())
 
-  sessionId  String
-  ipAddress  String
+  sessionId String
+  ipAddress String
 
-  pollId     String
-  poll        Poll    @relation(fields: [pollId], references: [id], onDelete: Cascade)
+  pollId String
+  poll   Poll   @relation(fields: [pollId], references: [id], onDelete: Cascade)
 
-  optionId   String
-  option      Option  @relation(fields: [optionId], references: [id], onDelete: Cascade)
+  options VoteOption[]
 
-  createdAt  DateTime @default(now())
+  createdAt DateTime @default(now())
 
   @@unique([pollId, sessionId])
+  @@map("votes")
+}
+
+model VoteOption {
+  id String @id @default(uuid())
+
+  voteId String
+  vote   Vote   @relation(fields: [voteId], references: [id], onDelete: Cascade)
+
+  optionId String
+  option   Option @relation(fields: [optionId], references: [id], onDelete: Cascade)
+
+  @@unique([voteId, optionId])
+  @@map("vote_options")
 }
