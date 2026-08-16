@@ -56,5 +56,12 @@ export default tseslint.config(
     },
   },
 
+  {
+    files: ["apps/server/src/types/express.ts"],
+    rules: {
+      "@typescript-eslint/no-namespace": "off",
+    },
+  },
+
   eslintConfigPrettier
 );
