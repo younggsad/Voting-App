@@ -15,6 +15,9 @@ export const ERROR_CODES = {
   // Vote
   VOTE_NOT_ALLOWED: "VOTE_NOT_ALLOWED",
   ALREADY_VOTED: "ALREADY_VOTED",
+
+  // Session
+  SESSION_REQUIRED: "SESSION_REQUIRED",
 } as const;
 
 export type ErrorCode = (typeof ERROR_CODES)[keyof typeof ERROR_CODES];
