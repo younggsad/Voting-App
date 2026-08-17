@@ -393,6 +393,7 @@ export const ModelName = {
   Poll: "Poll",
   Option: "Option",
   Vote: "Vote",
+  VoteOption: "VoteOption",
 } as const;
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName];
@@ -412,7 +413,7 @@ export type TypeMap<
     omit: GlobalOmitOptions;
   };
   meta: {
-    modelProps: "poll" | "option" | "vote";
+    modelProps: "poll" | "option" | "vote" | "voteOption";
     txIsolationLevel: TransactionIsolationLevel;
   };
   model: {
@@ -638,6 +639,80 @@ export type TypeMap<
         };
       };
     };
+    VoteOption: {
+      payload: Prisma.$VoteOptionPayload<ExtArgs>;
+      fields: Prisma.VoteOptionFieldRefs;
+      operations: {
+        findUnique: {
+          args: Prisma.VoteOptionFindUniqueArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VoteOptionPayload> | null;
+        };
+        findUniqueOrThrow: {
+          args: Prisma.VoteOptionFindUniqueOrThrowArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VoteOptionPayload>;
+        };
+        findFirst: {
+          args: Prisma.VoteOptionFindFirstArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VoteOptionPayload> | null;
+        };
+        findFirstOrThrow: {
+          args: Prisma.VoteOptionFindFirstOrThrowArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VoteOptionPayload>;
+        };
+        findMany: {
+          args: Prisma.VoteOptionFindManyArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VoteOptionPayload>[];
+        };
+        create: {
+          args: Prisma.VoteOptionCreateArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VoteOptionPayload>;
+        };
+        createMany: {
+          args: Prisma.VoteOptionCreateManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        createManyAndReturn: {
+          args: Prisma.VoteOptionCreateManyAndReturnArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VoteOptionPayload>[];
+        };
+        delete: {
+          args: Prisma.VoteOptionDeleteArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VoteOptionPayload>;
+        };
+        update: {
+          args: Prisma.VoteOptionUpdateArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VoteOptionPayload>;
+        };
+        deleteMany: {
+          args: Prisma.VoteOptionDeleteManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        updateMany: {
+          args: Prisma.VoteOptionUpdateManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        updateManyAndReturn: {
+          args: Prisma.VoteOptionUpdateManyAndReturnArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VoteOptionPayload>[];
+        };
+        upsert: {
+          args: Prisma.VoteOptionUpsertArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VoteOptionPayload>;
+        };
+        aggregate: {
+          args: Prisma.VoteOptionAggregateArgs<ExtArgs>;
+          result: runtime.Types.Utils.Optional<Prisma.AggregateVoteOption>;
+        };
+        groupBy: {
+          args: Prisma.VoteOptionGroupByArgs<ExtArgs>;
+          result: runtime.Types.Utils.Optional<Prisma.VoteOptionGroupByOutputType>[];
+        };
+        count: {
+          args: Prisma.VoteOptionCountArgs<ExtArgs>;
+          result: runtime.Types.Utils.Optional<Prisma.VoteOptionCountAggregateOutputType> | number;
+        };
+      };
+    };
   };
 } & {
   other: {
@@ -704,11 +779,19 @@ export const VoteScalarFieldEnum = {
   sessionId: "sessionId",
   ipAddress: "ipAddress",
   pollId: "pollId",
-  optionId: "optionId",
   createdAt: "createdAt",
 } as const;
 
 export type VoteScalarFieldEnum = (typeof VoteScalarFieldEnum)[keyof typeof VoteScalarFieldEnum];
+
+export const VoteOptionScalarFieldEnum = {
+  id: "id",
+  voteId: "voteId",
+  optionId: "optionId",
+} as const;
+
+export type VoteOptionScalarFieldEnum =
+  (typeof VoteOptionScalarFieldEnum)[keyof typeof VoteOptionScalarFieldEnum];
 
 export const SortOrder = {
   asc: "asc",
@@ -930,6 +1013,7 @@ export type GlobalOmitConfig = {
   poll?: Prisma.PollOmit;
   option?: Prisma.OptionOmit;
   vote?: Prisma.VoteOmit;
+  voteOption?: Prisma.VoteOptionOmit;
 };
 
 /* Types for Logging */

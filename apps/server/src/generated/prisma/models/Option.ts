@@ -163,7 +163,7 @@ export type OptionWhereInput = {
   text?: Prisma.StringFilter<"Option"> | string;
   pollId?: Prisma.StringFilter<"Option"> | string;
   poll?: Prisma.XOR<Prisma.PollScalarRelationFilter, Prisma.PollWhereInput>;
-  votes?: Prisma.VoteListRelationFilter;
+  voteOptions?: Prisma.VoteOptionListRelationFilter;
 };
 
 export type OptionOrderByWithRelationInput = {
@@ -171,7 +171,7 @@ export type OptionOrderByWithRelationInput = {
   text?: Prisma.SortOrder;
   pollId?: Prisma.SortOrder;
   poll?: Prisma.PollOrderByWithRelationInput;
-  votes?: Prisma.VoteOrderByRelationAggregateInput;
+  voteOptions?: Prisma.VoteOptionOrderByRelationAggregateInput;
 };
 
 export type OptionWhereUniqueInput = Prisma.AtLeast<
@@ -183,7 +183,7 @@ export type OptionWhereUniqueInput = Prisma.AtLeast<
     text?: Prisma.StringFilter<"Option"> | string;
     pollId?: Prisma.StringFilter<"Option"> | string;
     poll?: Prisma.XOR<Prisma.PollScalarRelationFilter, Prisma.PollWhereInput>;
-    votes?: Prisma.VoteListRelationFilter;
+    voteOptions?: Prisma.VoteOptionListRelationFilter;
   },
   "id"
 >;
@@ -210,28 +210,28 @@ export type OptionCreateInput = {
   id?: string;
   text: string;
   poll: Prisma.PollCreateNestedOneWithoutOptionsInput;
-  votes?: Prisma.VoteCreateNestedManyWithoutOptionInput;
+  voteOptions?: Prisma.VoteOptionCreateNestedManyWithoutOptionInput;
 };
 
 export type OptionUncheckedCreateInput = {
   id?: string;
   text: string;
   pollId: string;
-  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutOptionInput;
+  voteOptions?: Prisma.VoteOptionUncheckedCreateNestedManyWithoutOptionInput;
 };
 
 export type OptionUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   text?: Prisma.StringFieldUpdateOperationsInput | string;
   poll?: Prisma.PollUpdateOneRequiredWithoutOptionsNestedInput;
-  votes?: Prisma.VoteUpdateManyWithoutOptionNestedInput;
+  voteOptions?: Prisma.VoteOptionUpdateManyWithoutOptionNestedInput;
 };
 
 export type OptionUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   text?: Prisma.StringFieldUpdateOperationsInput | string;
   pollId?: Prisma.StringFieldUpdateOperationsInput | string;
-  votes?: Prisma.VoteUncheckedUpdateManyWithoutOptionNestedInput;
+  voteOptions?: Prisma.VoteOptionUncheckedUpdateManyWithoutOptionNestedInput;
 };
 
 export type OptionCreateManyInput = {
@@ -354,42 +354,42 @@ export type OptionUncheckedUpdateManyWithoutPollNestedInput = {
   deleteMany?: Prisma.OptionScalarWhereInput | Prisma.OptionScalarWhereInput[];
 };
 
-export type OptionCreateNestedOneWithoutVotesInput = {
+export type OptionCreateNestedOneWithoutVoteOptionsInput = {
   create?: Prisma.XOR<
-    Prisma.OptionCreateWithoutVotesInput,
-    Prisma.OptionUncheckedCreateWithoutVotesInput
+    Prisma.OptionCreateWithoutVoteOptionsInput,
+    Prisma.OptionUncheckedCreateWithoutVoteOptionsInput
   >;
-  connectOrCreate?: Prisma.OptionCreateOrConnectWithoutVotesInput;
+  connectOrCreate?: Prisma.OptionCreateOrConnectWithoutVoteOptionsInput;
   connect?: Prisma.OptionWhereUniqueInput;
 };
 
-export type OptionUpdateOneRequiredWithoutVotesNestedInput = {
+export type OptionUpdateOneRequiredWithoutVoteOptionsNestedInput = {
   create?: Prisma.XOR<
-    Prisma.OptionCreateWithoutVotesInput,
-    Prisma.OptionUncheckedCreateWithoutVotesInput
+    Prisma.OptionCreateWithoutVoteOptionsInput,
+    Prisma.OptionUncheckedCreateWithoutVoteOptionsInput
   >;
-  connectOrCreate?: Prisma.OptionCreateOrConnectWithoutVotesInput;
-  upsert?: Prisma.OptionUpsertWithoutVotesInput;
+  connectOrCreate?: Prisma.OptionCreateOrConnectWithoutVoteOptionsInput;
+  upsert?: Prisma.OptionUpsertWithoutVoteOptionsInput;
   connect?: Prisma.OptionWhereUniqueInput;
   update?: Prisma.XOR<
     Prisma.XOR<
-      Prisma.OptionUpdateToOneWithWhereWithoutVotesInput,
-      Prisma.OptionUpdateWithoutVotesInput
+      Prisma.OptionUpdateToOneWithWhereWithoutVoteOptionsInput,
+      Prisma.OptionUpdateWithoutVoteOptionsInput
     >,
-    Prisma.OptionUncheckedUpdateWithoutVotesInput
+    Prisma.OptionUncheckedUpdateWithoutVoteOptionsInput
   >;
 };
 
 export type OptionCreateWithoutPollInput = {
   id?: string;
   text: string;
-  votes?: Prisma.VoteCreateNestedManyWithoutOptionInput;
+  voteOptions?: Prisma.VoteOptionCreateNestedManyWithoutOptionInput;
 };
 
 export type OptionUncheckedCreateWithoutPollInput = {
   id?: string;
   text: string;
-  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutOptionInput;
+  voteOptions?: Prisma.VoteOptionUncheckedCreateNestedManyWithoutOptionInput;
 };
 
 export type OptionCreateOrConnectWithoutPollInput = {
@@ -442,53 +442,53 @@ export type OptionScalarWhereInput = {
   pollId?: Prisma.StringFilter<"Option"> | string;
 };
 
-export type OptionCreateWithoutVotesInput = {
+export type OptionCreateWithoutVoteOptionsInput = {
   id?: string;
   text: string;
   poll: Prisma.PollCreateNestedOneWithoutOptionsInput;
 };
 
-export type OptionUncheckedCreateWithoutVotesInput = {
+export type OptionUncheckedCreateWithoutVoteOptionsInput = {
   id?: string;
   text: string;
   pollId: string;
 };
 
-export type OptionCreateOrConnectWithoutVotesInput = {
+export type OptionCreateOrConnectWithoutVoteOptionsInput = {
   where: Prisma.OptionWhereUniqueInput;
   create: Prisma.XOR<
-    Prisma.OptionCreateWithoutVotesInput,
-    Prisma.OptionUncheckedCreateWithoutVotesInput
+    Prisma.OptionCreateWithoutVoteOptionsInput,
+    Prisma.OptionUncheckedCreateWithoutVoteOptionsInput
   >;
 };
 
-export type OptionUpsertWithoutVotesInput = {
+export type OptionUpsertWithoutVoteOptionsInput = {
   update: Prisma.XOR<
-    Prisma.OptionUpdateWithoutVotesInput,
-    Prisma.OptionUncheckedUpdateWithoutVotesInput
+    Prisma.OptionUpdateWithoutVoteOptionsInput,
+    Prisma.OptionUncheckedUpdateWithoutVoteOptionsInput
   >;
   create: Prisma.XOR<
-    Prisma.OptionCreateWithoutVotesInput,
-    Prisma.OptionUncheckedCreateWithoutVotesInput
+    Prisma.OptionCreateWithoutVoteOptionsInput,
+    Prisma.OptionUncheckedCreateWithoutVoteOptionsInput
   >;
   where?: Prisma.OptionWhereInput;
 };
 
-export type OptionUpdateToOneWithWhereWithoutVotesInput = {
+export type OptionUpdateToOneWithWhereWithoutVoteOptionsInput = {
   where?: Prisma.OptionWhereInput;
   data: Prisma.XOR<
-    Prisma.OptionUpdateWithoutVotesInput,
-    Prisma.OptionUncheckedUpdateWithoutVotesInput
+    Prisma.OptionUpdateWithoutVoteOptionsInput,
+    Prisma.OptionUncheckedUpdateWithoutVoteOptionsInput
   >;
 };
 
-export type OptionUpdateWithoutVotesInput = {
+export type OptionUpdateWithoutVoteOptionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   text?: Prisma.StringFieldUpdateOperationsInput | string;
   poll?: Prisma.PollUpdateOneRequiredWithoutOptionsNestedInput;
 };
 
-export type OptionUncheckedUpdateWithoutVotesInput = {
+export type OptionUncheckedUpdateWithoutVoteOptionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   text?: Prisma.StringFieldUpdateOperationsInput | string;
   pollId?: Prisma.StringFieldUpdateOperationsInput | string;
@@ -502,13 +502,13 @@ export type OptionCreateManyPollInput = {
 export type OptionUpdateWithoutPollInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   text?: Prisma.StringFieldUpdateOperationsInput | string;
-  votes?: Prisma.VoteUpdateManyWithoutOptionNestedInput;
+  voteOptions?: Prisma.VoteOptionUpdateManyWithoutOptionNestedInput;
 };
 
 export type OptionUncheckedUpdateWithoutPollInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   text?: Prisma.StringFieldUpdateOperationsInput | string;
-  votes?: Prisma.VoteUncheckedUpdateManyWithoutOptionNestedInput;
+  voteOptions?: Prisma.VoteOptionUncheckedUpdateManyWithoutOptionNestedInput;
 };
 
 export type OptionUncheckedUpdateManyWithoutPollInput = {
@@ -521,13 +521,13 @@ export type OptionUncheckedUpdateManyWithoutPollInput = {
  */
 
 export type OptionCountOutputType = {
-  votes: number;
+  voteOptions: number;
 };
 
 export type OptionCountOutputTypeSelect<
   ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
-  votes?: boolean | OptionCountOutputTypeCountVotesArgs;
+  voteOptions?: boolean | OptionCountOutputTypeCountVoteOptionsArgs;
 };
 
 /**
@@ -545,10 +545,10 @@ export type OptionCountOutputTypeDefaultArgs<
 /**
  * OptionCountOutputType without action
  */
-export type OptionCountOutputTypeCountVotesArgs<
+export type OptionCountOutputTypeCountVoteOptionsArgs<
   ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
-  where?: Prisma.VoteWhereInput;
+  where?: Prisma.VoteOptionWhereInput;
 };
 
 export type OptionSelect<
@@ -559,7 +559,7 @@ export type OptionSelect<
     text?: boolean;
     pollId?: boolean;
     poll?: boolean | Prisma.PollDefaultArgs<ExtArgs>;
-    votes?: boolean | Prisma.Option$votesArgs<ExtArgs>;
+    voteOptions?: boolean | Prisma.Option$voteOptionsArgs<ExtArgs>;
     _count?: boolean | Prisma.OptionCountOutputTypeDefaultArgs<ExtArgs>;
   },
   ExtArgs["result"]["option"]
@@ -602,7 +602,7 @@ export type OptionInclude<
   ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
   poll?: boolean | Prisma.PollDefaultArgs<ExtArgs>;
-  votes?: boolean | Prisma.Option$votesArgs<ExtArgs>;
+  voteOptions?: boolean | Prisma.Option$voteOptionsArgs<ExtArgs>;
   _count?: boolean | Prisma.OptionCountOutputTypeDefaultArgs<ExtArgs>;
 };
 export type OptionIncludeCreateManyAndReturn<
@@ -622,7 +622,7 @@ export type $OptionPayload<
   name: "Option";
   objects: {
     poll: Prisma.$PollPayload<ExtArgs>;
-    votes: Prisma.$VotePayload<ExtArgs>[];
+    voteOptions: Prisma.$VoteOptionPayload<ExtArgs>[];
   };
   scalars: runtime.Types.Extensions.GetPayloadResult<
     {
@@ -1153,10 +1153,15 @@ export interface Prisma__OptionClient<
     ExtArgs,
     GlobalOmitOptions
   >;
-  votes<T extends Prisma.Option$votesArgs<ExtArgs> = {}>(
-    args?: Prisma.Subset<T, Prisma.Option$votesArgs<ExtArgs>>
+  voteOptions<T extends Prisma.Option$voteOptionsArgs<ExtArgs> = {}>(
+    args?: Prisma.Subset<T, Prisma.Option$voteOptionsArgs<ExtArgs>>
   ): Prisma.PrismaPromise<
-    | runtime.Types.Result.GetResult<Prisma.$VotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>
+    | runtime.Types.Result.GetResult<
+        Prisma.$VoteOptionPayload<ExtArgs>,
+        T,
+        "findMany",
+        GlobalOmitOptions
+      >
     | Null
   >;
   /**
@@ -1621,29 +1626,29 @@ export type OptionDeleteManyArgs<
 };
 
 /**
- * Option.votes
+ * Option.voteOptions
  */
-export type Option$votesArgs<
+export type Option$voteOptionsArgs<
   ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
-   * Select specific fields to fetch from the Vote
+   * Select specific fields to fetch from the VoteOption
    */
-  select?: Prisma.VoteSelect<ExtArgs> | null;
+  select?: Prisma.VoteOptionSelect<ExtArgs> | null;
   /**
-   * Omit specific fields from the Vote
+   * Omit specific fields from the VoteOption
    */
-  omit?: Prisma.VoteOmit<ExtArgs> | null;
+  omit?: Prisma.VoteOptionOmit<ExtArgs> | null;
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.VoteInclude<ExtArgs> | null;
-  where?: Prisma.VoteWhereInput;
-  orderBy?: Prisma.VoteOrderByWithRelationInput | Prisma.VoteOrderByWithRelationInput[];
-  cursor?: Prisma.VoteWhereUniqueInput;
+  include?: Prisma.VoteOptionInclude<ExtArgs> | null;
+  where?: Prisma.VoteOptionWhereInput;
+  orderBy?: Prisma.VoteOptionOrderByWithRelationInput | Prisma.VoteOptionOrderByWithRelationInput[];
+  cursor?: Prisma.VoteOptionWhereUniqueInput;
   take?: number;
   skip?: number;
-  distinct?: Prisma.VoteScalarFieldEnum | Prisma.VoteScalarFieldEnum[];
+  distinct?: Prisma.VoteOptionScalarFieldEnum | Prisma.VoteOptionScalarFieldEnum[];
 };
 
 /**

@@ -38,7 +38,7 @@ export class PollService {
     });
 
     if (!poll) {
-      throw new NotFoundError("Poll not found", ERROR_CODES.POLL_NOT_FOUND);
+      throw new NotFoundError("Poll not found", undefined, ERROR_CODES.POLL_NOT_FOUND);
     }
 
     return mapPollToResponse(poll);

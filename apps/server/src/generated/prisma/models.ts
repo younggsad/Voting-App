@@ -10,4 +10,5 @@
 export type * from "./models/Poll";
 export type * from "./models/Option";
 export type * from "./models/Vote";
+export type * from "./models/VoteOption";
 export type * from "./commonInputTypes";

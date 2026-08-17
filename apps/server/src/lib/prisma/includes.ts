@@ -6,7 +6,7 @@ export const pollResultsInclude = {
     include: {
       _count: {
         select: {
-          votes: true,
+          voteOptions: true,
         },
       },
     },
