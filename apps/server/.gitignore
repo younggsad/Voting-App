@@ -12,7 +12,7 @@ build/
 # Prisma generated client
 apps/server/src/generated/prisma/
 
-# Coverage
+# Test coverage
 coverage/
 
 # Logs

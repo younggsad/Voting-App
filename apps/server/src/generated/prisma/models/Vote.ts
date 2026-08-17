@@ -178,6 +178,7 @@ export type VoteWhereInput = {
   ipAddress?: Prisma.StringFilter<"Vote"> | string;
   pollId?: Prisma.StringFilter<"Vote"> | string;
   createdAt?: Prisma.DateTimeFilter<"Vote"> | Date | string;
+  session?: Prisma.XOR<Prisma.SessionScalarRelationFilter, Prisma.SessionWhereInput>;
   poll?: Prisma.XOR<Prisma.PollScalarRelationFilter, Prisma.PollWhereInput>;
   options?: Prisma.VoteOptionListRelationFilter;
 };
@@ -188,6 +189,7 @@ export type VoteOrderByWithRelationInput = {
   ipAddress?: Prisma.SortOrder;
   pollId?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
+  session?: Prisma.SessionOrderByWithRelationInput;
   poll?: Prisma.PollOrderByWithRelationInput;
   options?: Prisma.VoteOptionOrderByRelationAggregateInput;
 };
@@ -203,6 +205,7 @@ export type VoteWhereUniqueInput = Prisma.AtLeast<
     ipAddress?: Prisma.StringFilter<"Vote"> | string;
     pollId?: Prisma.StringFilter<"Vote"> | string;
     createdAt?: Prisma.DateTimeFilter<"Vote"> | Date | string;
+    session?: Prisma.XOR<Prisma.SessionScalarRelationFilter, Prisma.SessionWhereInput>;
     poll?: Prisma.XOR<Prisma.PollScalarRelationFilter, Prisma.PollWhereInput>;
     options?: Prisma.VoteOptionListRelationFilter;
   },
@@ -233,9 +236,9 @@ export type VoteScalarWhereWithAggregatesInput = {
 
 export type VoteCreateInput = {
   id?: string;
-  sessionId: string;
   ipAddress: string;
   createdAt?: Date | string;
+  session: Prisma.SessionCreateNestedOneWithoutVotesInput;
   poll: Prisma.PollCreateNestedOneWithoutVotesInput;
   options?: Prisma.VoteOptionCreateNestedManyWithoutVoteInput;
 };
@@ -251,9 +254,9 @@ export type VoteUncheckedCreateInput = {
 
 export type VoteUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
-  sessionId?: Prisma.StringFieldUpdateOperationsInput | string;
   ipAddress?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  session?: Prisma.SessionUpdateOneRequiredWithoutVotesNestedInput;
   poll?: Prisma.PollUpdateOneRequiredWithoutVotesNestedInput;
   options?: Prisma.VoteOptionUpdateManyWithoutVoteNestedInput;
 };
@@ -277,7 +280,6 @@ export type VoteCreateManyInput = {
 
 export type VoteUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
-  sessionId?: Prisma.StringFieldUpdateOperationsInput | string;
   ipAddress?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
@@ -430,11 +432,93 @@ export type VoteUpdateOneRequiredWithoutOptionsNestedInput = {
   >;
 };
 
+export type VoteCreateNestedManyWithoutSessionInput = {
+  create?:
+    | Prisma.XOR<
+        Prisma.VoteCreateWithoutSessionInput,
+        Prisma.VoteUncheckedCreateWithoutSessionInput
+      >
+    | Prisma.VoteCreateWithoutSessionInput[]
+    | Prisma.VoteUncheckedCreateWithoutSessionInput[];
+  connectOrCreate?:
+    Prisma.VoteCreateOrConnectWithoutSessionInput | Prisma.VoteCreateOrConnectWithoutSessionInput[];
+  createMany?: Prisma.VoteCreateManySessionInputEnvelope;
+  connect?: Prisma.VoteWhereUniqueInput | Prisma.VoteWhereUniqueInput[];
+};
+
+export type VoteUncheckedCreateNestedManyWithoutSessionInput = {
+  create?:
+    | Prisma.XOR<
+        Prisma.VoteCreateWithoutSessionInput,
+        Prisma.VoteUncheckedCreateWithoutSessionInput
+      >
+    | Prisma.VoteCreateWithoutSessionInput[]
+    | Prisma.VoteUncheckedCreateWithoutSessionInput[];
+  connectOrCreate?:
+    Prisma.VoteCreateOrConnectWithoutSessionInput | Prisma.VoteCreateOrConnectWithoutSessionInput[];
+  createMany?: Prisma.VoteCreateManySessionInputEnvelope;
+  connect?: Prisma.VoteWhereUniqueInput | Prisma.VoteWhereUniqueInput[];
+};
+
+export type VoteUpdateManyWithoutSessionNestedInput = {
+  create?:
+    | Prisma.XOR<
+        Prisma.VoteCreateWithoutSessionInput,
+        Prisma.VoteUncheckedCreateWithoutSessionInput
+      >
+    | Prisma.VoteCreateWithoutSessionInput[]
+    | Prisma.VoteUncheckedCreateWithoutSessionInput[];
+  connectOrCreate?:
+    Prisma.VoteCreateOrConnectWithoutSessionInput | Prisma.VoteCreateOrConnectWithoutSessionInput[];
+  upsert?:
+    | Prisma.VoteUpsertWithWhereUniqueWithoutSessionInput
+    | Prisma.VoteUpsertWithWhereUniqueWithoutSessionInput[];
+  createMany?: Prisma.VoteCreateManySessionInputEnvelope;
+  set?: Prisma.VoteWhereUniqueInput | Prisma.VoteWhereUniqueInput[];
+  disconnect?: Prisma.VoteWhereUniqueInput | Prisma.VoteWhereUniqueInput[];
+  delete?: Prisma.VoteWhereUniqueInput | Prisma.VoteWhereUniqueInput[];
+  connect?: Prisma.VoteWhereUniqueInput | Prisma.VoteWhereUniqueInput[];
+  update?:
+    | Prisma.VoteUpdateWithWhereUniqueWithoutSessionInput
+    | Prisma.VoteUpdateWithWhereUniqueWithoutSessionInput[];
+  updateMany?:
+    | Prisma.VoteUpdateManyWithWhereWithoutSessionInput
+    | Prisma.VoteUpdateManyWithWhereWithoutSessionInput[];
+  deleteMany?: Prisma.VoteScalarWhereInput | Prisma.VoteScalarWhereInput[];
+};
+
+export type VoteUncheckedUpdateManyWithoutSessionNestedInput = {
+  create?:
+    | Prisma.XOR<
+        Prisma.VoteCreateWithoutSessionInput,
+        Prisma.VoteUncheckedCreateWithoutSessionInput
+      >
+    | Prisma.VoteCreateWithoutSessionInput[]
+    | Prisma.VoteUncheckedCreateWithoutSessionInput[];
+  connectOrCreate?:
+    Prisma.VoteCreateOrConnectWithoutSessionInput | Prisma.VoteCreateOrConnectWithoutSessionInput[];
+  upsert?:
+    | Prisma.VoteUpsertWithWhereUniqueWithoutSessionInput
+    | Prisma.VoteUpsertWithWhereUniqueWithoutSessionInput[];
+  createMany?: Prisma.VoteCreateManySessionInputEnvelope;
+  set?: Prisma.VoteWhereUniqueInput | Prisma.VoteWhereUniqueInput[];
+  disconnect?: Prisma.VoteWhereUniqueInput | Prisma.VoteWhereUniqueInput[];
+  delete?: Prisma.VoteWhereUniqueInput | Prisma.VoteWhereUniqueInput[];
+  connect?: Prisma.VoteWhereUniqueInput | Prisma.VoteWhereUniqueInput[];
+  update?:
+    | Prisma.VoteUpdateWithWhereUniqueWithoutSessionInput
+    | Prisma.VoteUpdateWithWhereUniqueWithoutSessionInput[];
+  updateMany?:
+    | Prisma.VoteUpdateManyWithWhereWithoutSessionInput
+    | Prisma.VoteUpdateManyWithWhereWithoutSessionInput[];
+  deleteMany?: Prisma.VoteScalarWhereInput | Prisma.VoteScalarWhereInput[];
+};
+
 export type VoteCreateWithoutPollInput = {
   id?: string;
-  sessionId: string;
   ipAddress: string;
   createdAt?: Date | string;
+  session: Prisma.SessionCreateNestedOneWithoutVotesInput;
   options?: Prisma.VoteOptionCreateNestedManyWithoutVoteInput;
 };
 
@@ -488,9 +572,9 @@ export type VoteScalarWhereInput = {
 
 export type VoteCreateWithoutOptionsInput = {
   id?: string;
-  sessionId: string;
   ipAddress: string;
   createdAt?: Date | string;
+  session: Prisma.SessionCreateNestedOneWithoutVotesInput;
   poll: Prisma.PollCreateNestedOneWithoutVotesInput;
 };
 
@@ -532,9 +616,9 @@ export type VoteUpdateToOneWithWhereWithoutOptionsInput = {
 
 export type VoteUpdateWithoutOptionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
-  sessionId?: Prisma.StringFieldUpdateOperationsInput | string;
   ipAddress?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  session?: Prisma.SessionUpdateOneRequiredWithoutVotesNestedInput;
   poll?: Prisma.PollUpdateOneRequiredWithoutVotesNestedInput;
 };
 
@@ -546,6 +630,63 @@ export type VoteUncheckedUpdateWithoutOptionsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
 
+export type VoteCreateWithoutSessionInput = {
+  id?: string;
+  ipAddress: string;
+  createdAt?: Date | string;
+  poll: Prisma.PollCreateNestedOneWithoutVotesInput;
+  options?: Prisma.VoteOptionCreateNestedManyWithoutVoteInput;
+};
+
+export type VoteUncheckedCreateWithoutSessionInput = {
+  id?: string;
+  ipAddress: string;
+  pollId: string;
+  createdAt?: Date | string;
+  options?: Prisma.VoteOptionUncheckedCreateNestedManyWithoutVoteInput;
+};
+
+export type VoteCreateOrConnectWithoutSessionInput = {
+  where: Prisma.VoteWhereUniqueInput;
+  create: Prisma.XOR<
+    Prisma.VoteCreateWithoutSessionInput,
+    Prisma.VoteUncheckedCreateWithoutSessionInput
+  >;
+};
+
+export type VoteCreateManySessionInputEnvelope = {
+  data: Prisma.VoteCreateManySessionInput | Prisma.VoteCreateManySessionInput[];
+  skipDuplicates?: boolean;
+};
+
+export type VoteUpsertWithWhereUniqueWithoutSessionInput = {
+  where: Prisma.VoteWhereUniqueInput;
+  update: Prisma.XOR<
+    Prisma.VoteUpdateWithoutSessionInput,
+    Prisma.VoteUncheckedUpdateWithoutSessionInput
+  >;
+  create: Prisma.XOR<
+    Prisma.VoteCreateWithoutSessionInput,
+    Prisma.VoteUncheckedCreateWithoutSessionInput
+  >;
+};
+
+export type VoteUpdateWithWhereUniqueWithoutSessionInput = {
+  where: Prisma.VoteWhereUniqueInput;
+  data: Prisma.XOR<
+    Prisma.VoteUpdateWithoutSessionInput,
+    Prisma.VoteUncheckedUpdateWithoutSessionInput
+  >;
+};
+
+export type VoteUpdateManyWithWhereWithoutSessionInput = {
+  where: Prisma.VoteScalarWhereInput;
+  data: Prisma.XOR<
+    Prisma.VoteUpdateManyMutationInput,
+    Prisma.VoteUncheckedUpdateManyWithoutSessionInput
+  >;
+};
+
 export type VoteCreateManyPollInput = {
   id?: string;
   sessionId: string;
@@ -555,9 +696,9 @@ export type VoteCreateManyPollInput = {
 
 export type VoteUpdateWithoutPollInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
-  sessionId?: Prisma.StringFieldUpdateOperationsInput | string;
   ipAddress?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  session?: Prisma.SessionUpdateOneRequiredWithoutVotesNestedInput;
   options?: Prisma.VoteOptionUpdateManyWithoutVoteNestedInput;
 };
 
@@ -573,6 +714,36 @@ export type VoteUncheckedUpdateManyWithoutPollInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   sessionId?: Prisma.StringFieldUpdateOperationsInput | string;
   ipAddress?: Prisma.StringFieldUpdateOperationsInput | string;
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+
+export type VoteCreateManySessionInput = {
+  id?: string;
+  ipAddress: string;
+  pollId: string;
+  createdAt?: Date | string;
+};
+
+export type VoteUpdateWithoutSessionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  ipAddress?: Prisma.StringFieldUpdateOperationsInput | string;
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  poll?: Prisma.PollUpdateOneRequiredWithoutVotesNestedInput;
+  options?: Prisma.VoteOptionUpdateManyWithoutVoteNestedInput;
+};
+
+export type VoteUncheckedUpdateWithoutSessionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  ipAddress?: Prisma.StringFieldUpdateOperationsInput | string;
+  pollId?: Prisma.StringFieldUpdateOperationsInput | string;
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  options?: Prisma.VoteOptionUncheckedUpdateManyWithoutVoteNestedInput;
+};
+
+export type VoteUncheckedUpdateManyWithoutSessionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  ipAddress?: Prisma.StringFieldUpdateOperationsInput | string;
+  pollId?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
 
@@ -620,6 +791,7 @@ export type VoteSelect<
     ipAddress?: boolean;
     pollId?: boolean;
     createdAt?: boolean;
+    session?: boolean | Prisma.SessionDefaultArgs<ExtArgs>;
     poll?: boolean | Prisma.PollDefaultArgs<ExtArgs>;
     options?: boolean | Prisma.Vote$optionsArgs<ExtArgs>;
     _count?: boolean | Prisma.VoteCountOutputTypeDefaultArgs<ExtArgs>;
@@ -636,6 +808,7 @@ export type VoteSelectCreateManyAndReturn<
     ipAddress?: boolean;
     pollId?: boolean;
     createdAt?: boolean;
+    session?: boolean | Prisma.SessionDefaultArgs<ExtArgs>;
     poll?: boolean | Prisma.PollDefaultArgs<ExtArgs>;
   },
   ExtArgs["result"]["vote"]
@@ -650,6 +823,7 @@ export type VoteSelectUpdateManyAndReturn<
     ipAddress?: boolean;
     pollId?: boolean;
     createdAt?: boolean;
+    session?: boolean | Prisma.SessionDefaultArgs<ExtArgs>;
     poll?: boolean | Prisma.PollDefaultArgs<ExtArgs>;
   },
   ExtArgs["result"]["vote"]
@@ -672,6 +846,7 @@ export type VoteOmit<
 export type VoteInclude<
   ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
+  session?: boolean | Prisma.SessionDefaultArgs<ExtArgs>;
   poll?: boolean | Prisma.PollDefaultArgs<ExtArgs>;
   options?: boolean | Prisma.Vote$optionsArgs<ExtArgs>;
   _count?: boolean | Prisma.VoteCountOutputTypeDefaultArgs<ExtArgs>;
@@ -679,11 +854,13 @@ export type VoteInclude<
 export type VoteIncludeCreateManyAndReturn<
   ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
+  session?: boolean | Prisma.SessionDefaultArgs<ExtArgs>;
   poll?: boolean | Prisma.PollDefaultArgs<ExtArgs>;
 };
 export type VoteIncludeUpdateManyAndReturn<
   ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
+  session?: boolean | Prisma.SessionDefaultArgs<ExtArgs>;
   poll?: boolean | Prisma.PollDefaultArgs<ExtArgs>;
 };
 
@@ -692,6 +869,7 @@ export type $VotePayload<
 > = {
   name: "Vote";
   objects: {
+    session: Prisma.$SessionPayload<ExtArgs>;
     poll: Prisma.$PollPayload<ExtArgs>;
     options: Prisma.$VoteOptionPayload<ExtArgs>[];
   };
@@ -1212,6 +1390,20 @@ export interface Prisma__VoteClient<
   GlobalOmitOptions = {},
 > extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise";
+  session<T extends Prisma.SessionDefaultArgs<ExtArgs> = {}>(
+    args?: Prisma.Subset<T, Prisma.SessionDefaultArgs<ExtArgs>>
+  ): Prisma.Prisma__SessionClient<
+    | runtime.Types.Result.GetResult<
+        Prisma.$SessionPayload<ExtArgs>,
+        T,
+        "findUniqueOrThrow",
+        GlobalOmitOptions
+      >
+    | Null,
+    Null,
+    ExtArgs,
+    GlobalOmitOptions
+  >;
   poll<T extends Prisma.PollDefaultArgs<ExtArgs> = {}>(
     args?: Prisma.Subset<T, Prisma.PollDefaultArgs<ExtArgs>>
   ): Prisma.Prisma__PollClient<

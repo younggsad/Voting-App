@@ -1,7 +1,10 @@
-import { describe, expect, it, vi, beforeEach } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+
+import { ERROR_CODES } from "@/errors/codes";
+import { Prisma } from "@/generated/prisma/client";
+import { prisma } from "@/lib/prisma";
 
 import { VoteService } from "./vote.service";
-import { prisma } from "@/lib/prisma";
 
 vi.mock("@/lib/prisma", () => ({
   prisma: {
@@ -31,7 +34,6 @@ describe("VoteService.vote", () => {
 
   it("should create a vote for a valid single-choice poll", async () => {
     vi.mocked(prisma.poll.findUnique).mockResolvedValue(poll as never);
-
     vi.mocked(prisma.vote.findUnique).mockResolvedValue(null);
 
     vi.mocked(prisma.$transaction).mockImplementation(async (callback) => {
@@ -66,7 +68,7 @@ describe("VoteService.vote", () => {
     });
   });
 
-  it("should throw when poll does not exist", async () => {
+  it("should throw POLL_NOT_FOUND when poll does not exist", async () => {
     vi.mocked(prisma.poll.findUnique).mockResolvedValue(null);
 
     await expect(
@@ -75,10 +77,14 @@ describe("VoteService.vote", () => {
       })
     ).rejects.toMatchObject({
       statusCode: 404,
+      code: ERROR_CODES.POLL_NOT_FOUND,
     });
+
+    expect(prisma.vote.findUnique).not.toHaveBeenCalled();
+    expect(prisma.$transaction).not.toHaveBeenCalled();
   });
 
-  it("should throw when poll has expired", async () => {
+  it("should throw VOTE_NOT_ALLOWED when poll has expired", async () => {
     vi.mocked(prisma.poll.findUnique).mockResolvedValue({
       ...poll,
       expiresAt: new Date("2020-01-01T00:00:00.000Z"),
@@ -90,10 +96,14 @@ describe("VoteService.vote", () => {
       })
     ).rejects.toMatchObject({
       statusCode: 400,
+      code: ERROR_CODES.VOTE_NOT_ALLOWED,
     });
+
+    expect(prisma.vote.findUnique).not.toHaveBeenCalled();
+    expect(prisma.$transaction).not.toHaveBeenCalled();
   });
 
-  it("should throw when option does not belong to poll", async () => {
+  it("should throw RESOURCE_NOT_FOUND when option does not belong to poll", async () => {
     vi.mocked(prisma.poll.findUnique).mockResolvedValue(poll as never);
 
     await expect(
@@ -102,10 +112,14 @@ describe("VoteService.vote", () => {
       })
     ).rejects.toMatchObject({
       statusCode: 404,
+      code: ERROR_CODES.RESOURCE_NOT_FOUND,
     });
+
+    expect(prisma.vote.findUnique).not.toHaveBeenCalled();
+    expect(prisma.$transaction).not.toHaveBeenCalled();
   });
 
-  it("should throw when multiple options are selected in single-choice poll", async () => {
+  it("should throw VOTE_NOT_ALLOWED when multiple options are selected in single-choice poll", async () => {
     vi.mocked(prisma.poll.findUnique).mockResolvedValue(poll as never);
 
     await expect(
@@ -114,10 +128,14 @@ describe("VoteService.vote", () => {
       })
     ).rejects.toMatchObject({
       statusCode: 400,
+      code: ERROR_CODES.VOTE_NOT_ALLOWED,
     });
+
+    expect(prisma.vote.findUnique).not.toHaveBeenCalled();
+    expect(prisma.$transaction).not.toHaveBeenCalled();
   });
 
-  it("should throw when session has already voted", async () => {
+  it("should throw ALREADY_VOTED when session has already voted", async () => {
     vi.mocked(prisma.poll.findUnique).mockResolvedValue(poll as never);
 
     vi.mocked(prisma.vote.findUnique).mockResolvedValue({
@@ -130,7 +148,10 @@ describe("VoteService.vote", () => {
       })
     ).rejects.toMatchObject({
       statusCode: 409,
+      code: ERROR_CODES.ALREADY_VOTED,
     });
+
+    expect(prisma.$transaction).not.toHaveBeenCalled();
   });
 
   it("should allow multiple options for multiple-choice poll", async () => {
@@ -229,6 +250,27 @@ describe("VoteService.vote", () => {
       sessionId: "session-1",
       optionIds: ["option-1", "option-2"],
       createdAt: createdVote.createdAt,
+    });
+  });
+
+  it("should throw ALREADY_VOTED when database rejects duplicate vote", async () => {
+    vi.mocked(prisma.poll.findUnique).mockResolvedValue(poll as never);
+    vi.mocked(prisma.vote.findUnique).mockResolvedValue(null);
+
+    const prismaError = new Prisma.PrismaClientKnownRequestError("Unique constraint failed", {
+      code: "P2002",
+      clientVersion: "7.9.1",
+    });
+
+    vi.mocked(prisma.$transaction).mockRejectedValue(prismaError);
+
+    await expect(
+      service.vote("poll-1", "session-1", "127.0.0.1", {
+        optionIds: ["option-1"],
+      })
+    ).rejects.toMatchObject({
+      statusCode: 409,
+      code: ERROR_CODES.ALREADY_VOTED,
     });
   });
 });

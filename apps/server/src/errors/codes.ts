@@ -1,6 +1,3 @@
-// Все коды ошибок API.
-// Клиент использует их вместо анализа текста message.
-
 export const ERROR_CODES = {
   // Общие ошибки
   INTERNAL_SERVER_ERROR: "INTERNAL_SERVER_ERROR",

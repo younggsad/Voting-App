@@ -36,3 +36,8 @@ export type Vote = Prisma.VoteModel;
  *
  */
 export type VoteOption = Prisma.VoteOptionModel;
+/**
+ * Model Session
+ *
+ */
+export type Session = Prisma.SessionModel;

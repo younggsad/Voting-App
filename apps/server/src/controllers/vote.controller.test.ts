@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { AppError } from "@/errors/app.error";
+import { ERROR_CODES } from "@/errors/codes";
 import { VoteService } from "@/services/vote.service";
 
 import { VoteController } from "./vote.controller";
@@ -47,7 +47,38 @@ describe("VoteController.vote", () => {
     voteSpy.mockRestore();
   });
 
-  it("should throw an error when client IP is missing", async () => {
+  it("should throw SESSION_REQUIRED when session is missing", async () => {
+    const voteSpy = vi.spyOn(VoteService.prototype, "vote");
+
+    const controller = new VoteController();
+
+    const req = {
+      params: {
+        id: "poll-1",
+      },
+      sessionId: undefined,
+      ip: "127.0.0.1",
+      body: {
+        optionIds: ["option-1"],
+      },
+    };
+
+    const res = {
+      status: vi.fn().mockReturnThis(),
+      json: vi.fn(),
+    };
+
+    await expect(controller.vote(req as never, res as never)).rejects.toMatchObject({
+      statusCode: 401,
+      code: ERROR_CODES.SESSION_REQUIRED,
+    });
+
+    expect(voteSpy).not.toHaveBeenCalled();
+
+    voteSpy.mockRestore();
+  });
+
+  it("should throw BAD_REQUEST when client IP is missing", async () => {
     const voteSpy = vi.spyOn(VoteService.prototype, "vote");
 
     const controller = new VoteController();
@@ -68,7 +99,10 @@ describe("VoteController.vote", () => {
       json: vi.fn(),
     };
 
-    await expect(controller.vote(req as never, res as never)).rejects.toBeInstanceOf(AppError);
+    await expect(controller.vote(req as never, res as never)).rejects.toMatchObject({
+      statusCode: 400,
+      code: ERROR_CODES.BAD_REQUEST,
+    });
 
     expect(voteSpy).not.toHaveBeenCalled();
 
@@ -99,6 +133,10 @@ describe("VoteController.vote", () => {
     };
 
     await expect(controller.vote(req as never, res as never)).rejects.toThrow("Vote failed");
+
+    expect(voteSpy).toHaveBeenCalledWith("poll-1", "session-1", "127.0.0.1", {
+      optionIds: ["option-1"],
+    });
 
     voteSpy.mockRestore();
   });

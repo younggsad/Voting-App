@@ -4,10 +4,8 @@ import { PollService } from "@/services/poll.service";
 import type { CreatePollDto } from "@/validators/poll.validator";
 
 export class PollController {
-  // Сервис, содержащий бизнес-логику работы с опросами
   private readonly pollService = new PollService();
 
-  // Создание нового опроса
   create = async (
     req: Request<Record<string, never>, unknown, CreatePollDto>,
     res: Response
@@ -17,7 +15,6 @@ export class PollController {
     res.status(201).json(poll);
   };
 
-  // Получение опроса по идентификатору
   findById = async (req: Request<{ id: string }, unknown>, res: Response): Promise<void> => {
     const poll = await this.pollService.findById(req.params.id);
 

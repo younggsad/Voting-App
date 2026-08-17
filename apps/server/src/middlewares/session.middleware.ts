@@ -1,27 +1,41 @@
 import type { RequestHandler } from "express";
-import { randomUUID } from "node:crypto";
 
-const SESSION_COOKIE_NAME = "sessionId";
+import { SESSION_COOKIE_NAME, SESSION_TTL_MS } from "@/constants/session";
+import type { SessionServiceContract } from "@/types/session-service";
+import { SessionService } from "@/services/session.service";
 
-export const sessionMiddleware: RequestHandler = (req, res, next) => {
-  const existingSessionId = req.cookies?.[SESSION_COOKIE_NAME];
+export const createSessionMiddleware = (sessionService: SessionServiceContract): RequestHandler => {
+  return async (req, res, next) => {
+    try {
+      const token = req.cookies?.[SESSION_COOKIE_NAME];
 
-  if (existingSessionId) {
-    req.sessionId = existingSessionId;
+      if (token) {
+        const session = await sessionService.findByToken(token);
 
-    next();
-    return;
-  }
+        if (session) {
+          req.sessionId = session.id;
+          next();
+          return;
+        }
+      }
 
-  const sessionId = randomUUID();
+      const session = await sessionService.create();
 
-  res.cookie(SESSION_COOKIE_NAME, sessionId, {
-    httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
-  });
+      res.cookie(SESSION_COOKIE_NAME, session.token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+        path: "/",
+        maxAge: SESSION_TTL_MS,
+      });
 
-  req.sessionId = sessionId;
+      req.sessionId = session.id;
 
-  next();
+      next();
+    } catch (error) {
+      next(error);
+    }
+  };
 };
+
+export const sessionMiddleware = createSessionMiddleware(new SessionService());

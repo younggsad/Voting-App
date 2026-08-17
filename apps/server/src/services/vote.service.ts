@@ -2,6 +2,7 @@ import { AppError } from "@/errors/app.error";
 import { ERROR_CODES } from "@/errors/codes";
 import { ConflictError } from "@/errors/conflict.error";
 import { NotFoundError } from "@/errors/not-found.error";
+import { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import type { VoteDto } from "@/validators/vote.validator";
 
@@ -55,24 +56,34 @@ export class VoteService {
       throw new ConflictError("You have already voted in this poll", ERROR_CODES.ALREADY_VOTED);
     }
 
-    const vote = await prisma.$transaction(async (tx) => {
-      const createdVote = await tx.vote.create({
-        data: {
-          pollId,
-          sessionId,
-          ipAddress,
-        },
-      });
+    let vote;
 
-      await tx.voteOption.createMany({
-        data: data.optionIds.map((optionId) => ({
-          voteId: createdVote.id,
-          optionId,
-        })),
-      });
+    try {
+      vote = await prisma.$transaction(async (tx) => {
+        const createdVote = await tx.vote.create({
+          data: {
+            pollId,
+            sessionId,
+            ipAddress,
+          },
+        });
 
-      return createdVote;
-    });
+        await tx.voteOption.createMany({
+          data: data.optionIds.map((optionId) => ({
+            voteId: createdVote.id,
+            optionId,
+          })),
+        });
+
+        return createdVote;
+      });
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
+        throw new ConflictError("You have already voted in this poll", ERROR_CODES.ALREADY_VOTED);
+      }
+
+      throw error;
+    }
 
     return {
       id: vote.id,
