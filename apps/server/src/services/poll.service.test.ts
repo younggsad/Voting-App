@@ -26,14 +26,14 @@ describe("PollService.create", () => {
           id: "option-1",
           text: "Option 1",
           _count: {
-            votes: 0,
+            voteOptions: 0,
           },
         },
         {
           id: "option-2",
           text: "Option 2",
           _count: {
-            votes: 0,
+            voteOptions: 0,
           },
         },
       ],

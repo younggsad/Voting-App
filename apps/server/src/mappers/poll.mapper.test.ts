@@ -17,7 +17,7 @@ describe("mapPollToResponse", () => {
           id: "option-1",
           text: "Yes",
           _count: {
-            votes: 7,
+            voteOptions: 7,
           },
         },
       ],

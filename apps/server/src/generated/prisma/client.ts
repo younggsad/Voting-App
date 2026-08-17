@@ -59,3 +59,8 @@ export type Option = Prisma.OptionModel;
  *
  */
 export type Vote = Prisma.VoteModel;
+/**
+ * Model VoteOption
+ *
+ */
+export type VoteOption = Prisma.VoteOptionModel;

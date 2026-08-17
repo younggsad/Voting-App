@@ -51,6 +51,7 @@ export const ModelName = {
   Poll: "Poll",
   Option: "Option",
   Vote: "Vote",
+  VoteOption: "VoteOption",
 } as const;
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName];
@@ -96,11 +97,19 @@ export const VoteScalarFieldEnum = {
   sessionId: "sessionId",
   ipAddress: "ipAddress",
   pollId: "pollId",
-  optionId: "optionId",
   createdAt: "createdAt",
 } as const;
 
 export type VoteScalarFieldEnum = (typeof VoteScalarFieldEnum)[keyof typeof VoteScalarFieldEnum];
+
+export const VoteOptionScalarFieldEnum = {
+  id: "id",
+  voteId: "voteId",
+  optionId: "optionId",
+} as const;
+
+export type VoteOptionScalarFieldEnum =
+  (typeof VoteOptionScalarFieldEnum)[keyof typeof VoteOptionScalarFieldEnum];
 
 export const SortOrder = {
   asc: "asc",

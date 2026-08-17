@@ -10,7 +10,7 @@ export type PollWithResults = {
     id: string;
     text: string;
     _count: {
-      votes: number;
+      voteOptions: number;
     };
   }[];
 };
@@ -43,6 +43,6 @@ export const mapPollToResponse = (poll: PollWithResults): PollResponse => ({
   options: poll.options.map((option) => ({
     id: option.id,
     text: option.text,
-    votesCount: option._count.votes,
+    votesCount: option._count.voteOptions,
   })),
 });
