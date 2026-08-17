@@ -1,23 +1,24 @@
 import type { NextFunction, Request, Response } from "express";
-import type { ZodObject, ZodRawShape } from "zod";
+import type { ZodType } from "zod";
 
-import { ERROR_CODES } from "@/errors/codes";
 import { BadRequestError } from "@/errors/bad-request.error";
+import { ERROR_CODES } from "@/errors/codes";
 
 export const validate =
-  <T extends ZodObject<ZodRawShape>>(schema: T) =>
-  (req: Request, _res: Response, next: NextFunction) => {
+  (schema: ZodType) =>
+  (req: Request, _res: Response, next: NextFunction): void => {
     const result = schema.safeParse(req.body);
 
     if (!result.success) {
-      throw new BadRequestError(
-        "Validation failed",
-        result.error.issues,
-        ERROR_CODES.VALIDATION_ERROR
+      next(
+        new BadRequestError("Validation failed", result.error.issues, ERROR_CODES.VALIDATION_ERROR)
       );
+
+      return;
     }
 
+    // Replace the untrusted request body with validated data.
     req.body = result.data;
 
-    return next();
+    next();
   };

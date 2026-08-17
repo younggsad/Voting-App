@@ -2,8 +2,8 @@ import express from "express";
 import request from "supertest";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { PollService } from "@/services/poll.service";
 import { errorMiddleware } from "@/middlewares/error.middleware";
+import { PollService } from "@/services/poll.service";
 
 import pollRoutes from "./poll.routes";
 
@@ -55,23 +55,23 @@ describe("Poll routes", () => {
 
       const app = createApp();
 
-      const response = await request(app)
-        .post("/polls")
-        .send({
-          title: "Test poll",
-          description: "Description",
-          isAnonymous: false,
-          isMultipleChoice: false,
-          expiresAt: "2026-12-01T12:00:00.000Z",
-          options: [
-            {
-              text: "Option 1",
-            },
-            {
-              text: "Option 2",
-            },
-          ],
-        });
+      const payload = {
+        title: "Test poll",
+        description: "Description",
+        isAnonymous: false,
+        isMultipleChoice: false,
+        expiresAt: "2026-12-01T12:00:00.000Z",
+        options: [
+          {
+            text: "Option 1",
+          },
+          {
+            text: "Option 2",
+          },
+        ],
+      };
+
+      const response = await request(app).post("/polls").send(payload);
 
       expect(response.status).toBe(201);
 
@@ -96,21 +96,8 @@ describe("Poll routes", () => {
         ],
       });
 
-      expect(createSpy).toHaveBeenCalledWith({
-        title: "Test poll",
-        description: "Description",
-        isAnonymous: false,
-        isMultipleChoice: false,
-        expiresAt: "2026-12-01T12:00:00.000Z",
-        options: [
-          {
-            text: "Option 1",
-          },
-          {
-            text: "Option 2",
-          },
-        ],
-      });
+      expect(createSpy).toHaveBeenCalledOnce();
+      expect(createSpy).toHaveBeenCalledWith(payload);
     });
 
     it("should return 400 for invalid poll data", async () => {
@@ -165,7 +152,7 @@ describe("Poll routes", () => {
         code: "INTERNAL_SERVER_ERROR",
       });
 
-      expect(createSpy).toHaveBeenCalled();
+      expect(createSpy).toHaveBeenCalledOnce();
     });
   });
 
@@ -221,6 +208,7 @@ describe("Poll routes", () => {
         ],
       });
 
+      expect(findByIdSpy).toHaveBeenCalledOnce();
       expect(findByIdSpy).toHaveBeenCalledWith(POLL_ID);
     });
 
@@ -242,6 +230,7 @@ describe("Poll routes", () => {
         code: "INTERNAL_SERVER_ERROR",
       });
 
+      expect(findByIdSpy).toHaveBeenCalledOnce();
       expect(findByIdSpy).toHaveBeenCalledWith(POLL_ID);
     });
   });

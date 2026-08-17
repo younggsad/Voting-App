@@ -41,6 +41,8 @@ model Vote {
   id String @id @default(uuid())
 
   sessionId String
+  session   Session @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
   ipAddress String
 
   pollId String
@@ -51,6 +53,7 @@ model Vote {
   createdAt DateTime @default(now())
 
   @@unique([pollId, sessionId])
+  @@index([sessionId])
   @@map("votes")
 }
 
@@ -65,4 +68,18 @@ model VoteOption {
 
   @@unique([voteId, optionId])
   @@map("vote_options")
+}
+
+model Session {
+  id        String   @id @default(uuid())
+  tokenHash String   @unique
+  expiresAt DateTime
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  votes Vote[]
+
+  @@index([expiresAt])
+  @@map("sessions")
 }

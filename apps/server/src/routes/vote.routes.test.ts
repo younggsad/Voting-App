@@ -3,8 +3,10 @@ import cookieParser from "cookie-parser";
 import request from "supertest";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { VoteService } from "@/services/vote.service";
 import { errorMiddleware } from "@/middlewares/error.middleware";
+import { SessionService } from "@/services/session.service";
+import { VoteService } from "@/services/vote.service";
+import { SESSION_COOKIE_NAME } from "@/constants/session";
 
 import voteRoutes from "./vote.routes";
 
@@ -12,6 +14,8 @@ const POLL_ID = "550e8400-e29b-41d4-a716-446655440000";
 const OPTION_ID = "550e8400-e29b-41d4-a716-446655440001";
 const SESSION_ID = "550e8400-e29b-41d4-a716-446655440002";
 const VOTE_ID = "550e8400-e29b-41d4-a716-446655440003";
+
+const SESSION_TOKEN = "existing-session-token";
 
 const createApp = () => {
   const app = express();
@@ -42,6 +46,12 @@ describe("POST /:id/vote", () => {
 
     const voteSpy = vi.spyOn(VoteService.prototype, "vote").mockResolvedValue(voteResult);
 
+    const sessionSpy = vi.spyOn(SessionService.prototype, "create").mockResolvedValue({
+      id: SESSION_ID,
+      token: "new-session-token",
+      expiresAt: new Date(Date.now() + 60_000),
+    });
+
     const app = createApp();
 
     const response = await request(app)
@@ -55,14 +65,16 @@ describe("POST /:id/vote", () => {
     expect(response.body).toEqual({
       id: VOTE_ID,
       pollId: POLL_ID,
-      sessionId: expect.any(String),
+      sessionId: SESSION_ID,
       optionIds: [OPTION_ID],
       createdAt: expect.any(String),
     });
 
     expect(response.headers["set-cookie"]).toBeDefined();
 
-    expect(voteSpy).toHaveBeenCalledWith(POLL_ID, expect.any(String), expect.any(String), {
+    expect(sessionSpy).toHaveBeenCalledOnce();
+
+    expect(voteSpy).toHaveBeenCalledWith(POLL_ID, SESSION_ID, expect.any(String), {
       optionIds: [OPTION_ID],
     });
   });
@@ -78,16 +90,30 @@ describe("POST /:id/vote", () => {
 
     const voteSpy = vi.spyOn(VoteService.prototype, "vote").mockResolvedValue(voteResult);
 
+    const findSessionSpy = vi.spyOn(SessionService.prototype, "findByToken").mockResolvedValue({
+      id: SESSION_ID,
+      tokenHash: "hashed-token",
+      expiresAt: new Date(Date.now() + 60_000),
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+
+    const createSessionSpy = vi.spyOn(SessionService.prototype, "create");
+
     const app = createApp();
 
     const response = await request(app)
       .post(`/polls/${POLL_ID}/vote`)
-      .set("Cookie", `sessionId=${SESSION_ID}`)
+      .set("Cookie", `${SESSION_COOKIE_NAME}=${SESSION_TOKEN}`)
       .send({
         optionIds: [OPTION_ID],
       });
 
     expect(response.status).toBe(201);
+
+    expect(findSessionSpy).toHaveBeenCalledWith(SESSION_TOKEN);
+
+    expect(createSessionSpy).not.toHaveBeenCalled();
 
     expect(voteSpy).toHaveBeenCalledWith(POLL_ID, SESSION_ID, expect.any(String), {
       optionIds: [OPTION_ID],
@@ -98,6 +124,8 @@ describe("POST /:id/vote", () => {
 
   it("should return 400 for invalid vote data", async () => {
     const voteSpy = vi.spyOn(VoteService.prototype, "vote");
+
+    const sessionSpy = vi.spyOn(SessionService.prototype, "create");
 
     const app = createApp();
 
@@ -113,12 +141,19 @@ describe("POST /:id/vote", () => {
     });
 
     expect(voteSpy).not.toHaveBeenCalled();
+    expect(sessionSpy).not.toHaveBeenCalled();
   });
 
   it("should propagate service errors to error middleware", async () => {
     const serviceError = new Error("Vote failed");
 
     const voteSpy = vi.spyOn(VoteService.prototype, "vote").mockRejectedValue(serviceError);
+
+    vi.spyOn(SessionService.prototype, "create").mockResolvedValue({
+      id: SESSION_ID,
+      token: "new-session-token",
+      expiresAt: new Date(Date.now() + 60_000),
+    });
 
     const app = createApp();
 

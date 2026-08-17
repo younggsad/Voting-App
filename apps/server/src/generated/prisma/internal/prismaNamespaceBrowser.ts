@@ -52,6 +52,7 @@ export const ModelName = {
   Option: "Option",
   Vote: "Vote",
   VoteOption: "VoteOption",
+  Session: "Session",
 } as const;
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName];
@@ -110,6 +111,17 @@ export const VoteOptionScalarFieldEnum = {
 
 export type VoteOptionScalarFieldEnum =
   (typeof VoteOptionScalarFieldEnum)[keyof typeof VoteOptionScalarFieldEnum];
+
+export const SessionScalarFieldEnum = {
+  id: "id",
+  tokenHash: "tokenHash",
+  expiresAt: "expiresAt",
+  createdAt: "createdAt",
+  updatedAt: "updatedAt",
+} as const;
+
+export type SessionScalarFieldEnum =
+  (typeof SessionScalarFieldEnum)[keyof typeof SessionScalarFieldEnum];
 
 export const SortOrder = {
   asc: "asc",
