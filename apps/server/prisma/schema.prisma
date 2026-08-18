@@ -27,6 +27,7 @@ model Poll {
 model Option {
   id   String @id @default(uuid())
   text String
+  position Int
 
   pollId String
   poll   Poll   @relation(fields: [pollId], references: [id], onDelete: Cascade)

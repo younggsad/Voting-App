@@ -87,6 +87,7 @@ export type PollScalarFieldEnum = (typeof PollScalarFieldEnum)[keyof typeof Poll
 export const OptionScalarFieldEnum = {
   id: "id",
   text: "text",
+  position: "position",
   pollId: "pollId",
 } as const;
 
