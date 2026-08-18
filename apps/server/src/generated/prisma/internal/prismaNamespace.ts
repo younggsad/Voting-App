@@ -843,6 +843,7 @@ export type PollScalarFieldEnum = (typeof PollScalarFieldEnum)[keyof typeof Poll
 export const OptionScalarFieldEnum = {
   id: "id",
   text: "text",
+  position: "position",
   pollId: "pollId",
 } as const;
 
@@ -938,6 +939,16 @@ export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, "In
  * Reference to a field of type 'Int[]'
  */
 export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, "Int[]">;
+
+/**
+ * Reference to a field of type 'Float'
+ */
+export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, "Float">;
+
+/**
+ * Reference to a field of type 'Float[]'
+ */
+export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, "Float[]">;
 
 /**
  * Batch Payload for updateMany & deleteMany & createMany

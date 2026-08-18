@@ -16,8 +16,9 @@ export class PollService {
         expiresAt: new Date(data.expiresAt),
 
         options: {
-          create: data.options.map((option) => ({
+          create: data.options.map((option, index) => ({
             text: option.text,
+            position: index,
           })),
         },
       },

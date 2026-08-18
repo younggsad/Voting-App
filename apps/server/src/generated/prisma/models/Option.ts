@@ -19,44 +19,68 @@ export type OptionModel = runtime.Types.Result.DefaultSelection<Prisma.$OptionPa
 
 export type AggregateOption = {
   _count: OptionCountAggregateOutputType | null;
+  _avg: OptionAvgAggregateOutputType | null;
+  _sum: OptionSumAggregateOutputType | null;
   _min: OptionMinAggregateOutputType | null;
   _max: OptionMaxAggregateOutputType | null;
+};
+
+export type OptionAvgAggregateOutputType = {
+  position: number | null;
+};
+
+export type OptionSumAggregateOutputType = {
+  position: number | null;
 };
 
 export type OptionMinAggregateOutputType = {
   id: string | null;
   text: string | null;
+  position: number | null;
   pollId: string | null;
 };
 
 export type OptionMaxAggregateOutputType = {
   id: string | null;
   text: string | null;
+  position: number | null;
   pollId: string | null;
 };
 
 export type OptionCountAggregateOutputType = {
   id: number;
   text: number;
+  position: number;
   pollId: number;
   _all: number;
+};
+
+export type OptionAvgAggregateInputType = {
+  position?: true;
+};
+
+export type OptionSumAggregateInputType = {
+  position?: true;
 };
 
 export type OptionMinAggregateInputType = {
   id?: true;
   text?: true;
+  position?: true;
   pollId?: true;
 };
 
 export type OptionMaxAggregateInputType = {
   id?: true;
   text?: true;
+  position?: true;
   pollId?: true;
 };
 
 export type OptionCountAggregateInputType = {
   id?: true;
   text?: true;
+  position?: true;
   pollId?: true;
   _all?: true;
 };
@@ -101,6 +125,18 @@ export type OptionAggregateArgs<
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    *
+   * Select which fields to average
+   **/
+  _avg?: OptionAvgAggregateInputType;
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   *
+   * Select which fields to sum
+   **/
+  _sum?: OptionSumAggregateInputType;
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   *
    * Select which fields to find the minimum value
    **/
   _min?: OptionMinAggregateInputType;
@@ -130,6 +166,8 @@ export type OptionGroupByArgs<
   take?: number;
   skip?: number;
   _count?: OptionCountAggregateInputType | true;
+  _avg?: OptionAvgAggregateInputType;
+  _sum?: OptionSumAggregateInputType;
   _min?: OptionMinAggregateInputType;
   _max?: OptionMaxAggregateInputType;
 };
@@ -137,8 +175,11 @@ export type OptionGroupByArgs<
 export type OptionGroupByOutputType = {
   id: string;
   text: string;
+  position: number;
   pollId: string;
   _count: OptionCountAggregateOutputType | null;
+  _avg: OptionAvgAggregateOutputType | null;
+  _sum: OptionSumAggregateOutputType | null;
   _min: OptionMinAggregateOutputType | null;
   _max: OptionMaxAggregateOutputType | null;
 };
@@ -161,6 +202,7 @@ export type OptionWhereInput = {
   NOT?: Prisma.OptionWhereInput | Prisma.OptionWhereInput[];
   id?: Prisma.StringFilter<"Option"> | string;
   text?: Prisma.StringFilter<"Option"> | string;
+  position?: Prisma.IntFilter<"Option"> | number;
   pollId?: Prisma.StringFilter<"Option"> | string;
   poll?: Prisma.XOR<Prisma.PollScalarRelationFilter, Prisma.PollWhereInput>;
   voteOptions?: Prisma.VoteOptionListRelationFilter;
@@ -169,6 +211,7 @@ export type OptionWhereInput = {
 export type OptionOrderByWithRelationInput = {
   id?: Prisma.SortOrder;
   text?: Prisma.SortOrder;
+  position?: Prisma.SortOrder;
   pollId?: Prisma.SortOrder;
   poll?: Prisma.PollOrderByWithRelationInput;
   voteOptions?: Prisma.VoteOptionOrderByRelationAggregateInput;
@@ -181,6 +224,7 @@ export type OptionWhereUniqueInput = Prisma.AtLeast<
     OR?: Prisma.OptionWhereInput[];
     NOT?: Prisma.OptionWhereInput | Prisma.OptionWhereInput[];
     text?: Prisma.StringFilter<"Option"> | string;
+    position?: Prisma.IntFilter<"Option"> | number;
     pollId?: Prisma.StringFilter<"Option"> | string;
     poll?: Prisma.XOR<Prisma.PollScalarRelationFilter, Prisma.PollWhereInput>;
     voteOptions?: Prisma.VoteOptionListRelationFilter;
@@ -191,10 +235,13 @@ export type OptionWhereUniqueInput = Prisma.AtLeast<
 export type OptionOrderByWithAggregationInput = {
   id?: Prisma.SortOrder;
   text?: Prisma.SortOrder;
+  position?: Prisma.SortOrder;
   pollId?: Prisma.SortOrder;
   _count?: Prisma.OptionCountOrderByAggregateInput;
+  _avg?: Prisma.OptionAvgOrderByAggregateInput;
   _max?: Prisma.OptionMaxOrderByAggregateInput;
   _min?: Prisma.OptionMinOrderByAggregateInput;
+  _sum?: Prisma.OptionSumOrderByAggregateInput;
 };
 
 export type OptionScalarWhereWithAggregatesInput = {
@@ -203,12 +250,14 @@ export type OptionScalarWhereWithAggregatesInput = {
   NOT?: Prisma.OptionScalarWhereWithAggregatesInput | Prisma.OptionScalarWhereWithAggregatesInput[];
   id?: Prisma.StringWithAggregatesFilter<"Option"> | string;
   text?: Prisma.StringWithAggregatesFilter<"Option"> | string;
+  position?: Prisma.IntWithAggregatesFilter<"Option"> | number;
   pollId?: Prisma.StringWithAggregatesFilter<"Option"> | string;
 };
 
 export type OptionCreateInput = {
   id?: string;
   text: string;
+  position: number;
   poll: Prisma.PollCreateNestedOneWithoutOptionsInput;
   voteOptions?: Prisma.VoteOptionCreateNestedManyWithoutOptionInput;
 };
@@ -216,6 +265,7 @@ export type OptionCreateInput = {
 export type OptionUncheckedCreateInput = {
   id?: string;
   text: string;
+  position: number;
   pollId: string;
   voteOptions?: Prisma.VoteOptionUncheckedCreateNestedManyWithoutOptionInput;
 };
@@ -223,6 +273,7 @@ export type OptionUncheckedCreateInput = {
 export type OptionUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   text?: Prisma.StringFieldUpdateOperationsInput | string;
+  position?: Prisma.IntFieldUpdateOperationsInput | number;
   poll?: Prisma.PollUpdateOneRequiredWithoutOptionsNestedInput;
   voteOptions?: Prisma.VoteOptionUpdateManyWithoutOptionNestedInput;
 };
@@ -230,6 +281,7 @@ export type OptionUpdateInput = {
 export type OptionUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   text?: Prisma.StringFieldUpdateOperationsInput | string;
+  position?: Prisma.IntFieldUpdateOperationsInput | number;
   pollId?: Prisma.StringFieldUpdateOperationsInput | string;
   voteOptions?: Prisma.VoteOptionUncheckedUpdateManyWithoutOptionNestedInput;
 };
@@ -237,17 +289,20 @@ export type OptionUncheckedUpdateInput = {
 export type OptionCreateManyInput = {
   id?: string;
   text: string;
+  position: number;
   pollId: string;
 };
 
 export type OptionUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   text?: Prisma.StringFieldUpdateOperationsInput | string;
+  position?: Prisma.IntFieldUpdateOperationsInput | number;
 };
 
 export type OptionUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   text?: Prisma.StringFieldUpdateOperationsInput | string;
+  position?: Prisma.IntFieldUpdateOperationsInput | number;
   pollId?: Prisma.StringFieldUpdateOperationsInput | string;
 };
 
@@ -264,19 +319,30 @@ export type OptionOrderByRelationAggregateInput = {
 export type OptionCountOrderByAggregateInput = {
   id?: Prisma.SortOrder;
   text?: Prisma.SortOrder;
+  position?: Prisma.SortOrder;
   pollId?: Prisma.SortOrder;
+};
+
+export type OptionAvgOrderByAggregateInput = {
+  position?: Prisma.SortOrder;
 };
 
 export type OptionMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder;
   text?: Prisma.SortOrder;
+  position?: Prisma.SortOrder;
   pollId?: Prisma.SortOrder;
 };
 
 export type OptionMinOrderByAggregateInput = {
   id?: Prisma.SortOrder;
   text?: Prisma.SortOrder;
+  position?: Prisma.SortOrder;
   pollId?: Prisma.SortOrder;
+};
+
+export type OptionSumOrderByAggregateInput = {
+  position?: Prisma.SortOrder;
 };
 
 export type OptionScalarRelationFilter = {
@@ -354,6 +420,14 @@ export type OptionUncheckedUpdateManyWithoutPollNestedInput = {
   deleteMany?: Prisma.OptionScalarWhereInput | Prisma.OptionScalarWhereInput[];
 };
 
+export type IntFieldUpdateOperationsInput = {
+  set?: number;
+  increment?: number;
+  decrement?: number;
+  multiply?: number;
+  divide?: number;
+};
+
 export type OptionCreateNestedOneWithoutVoteOptionsInput = {
   create?: Prisma.XOR<
     Prisma.OptionCreateWithoutVoteOptionsInput,
@@ -383,12 +457,14 @@ export type OptionUpdateOneRequiredWithoutVoteOptionsNestedInput = {
 export type OptionCreateWithoutPollInput = {
   id?: string;
   text: string;
+  position: number;
   voteOptions?: Prisma.VoteOptionCreateNestedManyWithoutOptionInput;
 };
 
 export type OptionUncheckedCreateWithoutPollInput = {
   id?: string;
   text: string;
+  position: number;
   voteOptions?: Prisma.VoteOptionUncheckedCreateNestedManyWithoutOptionInput;
 };
 
@@ -439,18 +515,21 @@ export type OptionScalarWhereInput = {
   NOT?: Prisma.OptionScalarWhereInput | Prisma.OptionScalarWhereInput[];
   id?: Prisma.StringFilter<"Option"> | string;
   text?: Prisma.StringFilter<"Option"> | string;
+  position?: Prisma.IntFilter<"Option"> | number;
   pollId?: Prisma.StringFilter<"Option"> | string;
 };
 
 export type OptionCreateWithoutVoteOptionsInput = {
   id?: string;
   text: string;
+  position: number;
   poll: Prisma.PollCreateNestedOneWithoutOptionsInput;
 };
 
 export type OptionUncheckedCreateWithoutVoteOptionsInput = {
   id?: string;
   text: string;
+  position: number;
   pollId: string;
 };
 
@@ -485,35 +564,41 @@ export type OptionUpdateToOneWithWhereWithoutVoteOptionsInput = {
 export type OptionUpdateWithoutVoteOptionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   text?: Prisma.StringFieldUpdateOperationsInput | string;
+  position?: Prisma.IntFieldUpdateOperationsInput | number;
   poll?: Prisma.PollUpdateOneRequiredWithoutOptionsNestedInput;
 };
 
 export type OptionUncheckedUpdateWithoutVoteOptionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   text?: Prisma.StringFieldUpdateOperationsInput | string;
+  position?: Prisma.IntFieldUpdateOperationsInput | number;
   pollId?: Prisma.StringFieldUpdateOperationsInput | string;
 };
 
 export type OptionCreateManyPollInput = {
   id?: string;
   text: string;
+  position: number;
 };
 
 export type OptionUpdateWithoutPollInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   text?: Prisma.StringFieldUpdateOperationsInput | string;
+  position?: Prisma.IntFieldUpdateOperationsInput | number;
   voteOptions?: Prisma.VoteOptionUpdateManyWithoutOptionNestedInput;
 };
 
 export type OptionUncheckedUpdateWithoutPollInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   text?: Prisma.StringFieldUpdateOperationsInput | string;
+  position?: Prisma.IntFieldUpdateOperationsInput | number;
   voteOptions?: Prisma.VoteOptionUncheckedUpdateManyWithoutOptionNestedInput;
 };
 
 export type OptionUncheckedUpdateManyWithoutPollInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   text?: Prisma.StringFieldUpdateOperationsInput | string;
+  position?: Prisma.IntFieldUpdateOperationsInput | number;
 };
 
 /**
@@ -557,6 +642,7 @@ export type OptionSelect<
   {
     id?: boolean;
     text?: boolean;
+    position?: boolean;
     pollId?: boolean;
     poll?: boolean | Prisma.PollDefaultArgs<ExtArgs>;
     voteOptions?: boolean | Prisma.Option$voteOptionsArgs<ExtArgs>;
@@ -571,6 +657,7 @@ export type OptionSelectCreateManyAndReturn<
   {
     id?: boolean;
     text?: boolean;
+    position?: boolean;
     pollId?: boolean;
     poll?: boolean | Prisma.PollDefaultArgs<ExtArgs>;
   },
@@ -583,6 +670,7 @@ export type OptionSelectUpdateManyAndReturn<
   {
     id?: boolean;
     text?: boolean;
+    position?: boolean;
     pollId?: boolean;
     poll?: boolean | Prisma.PollDefaultArgs<ExtArgs>;
   },
@@ -592,12 +680,16 @@ export type OptionSelectUpdateManyAndReturn<
 export type OptionSelectScalar = {
   id?: boolean;
   text?: boolean;
+  position?: boolean;
   pollId?: boolean;
 };
 
 export type OptionOmit<
   ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
-> = runtime.Types.Extensions.GetOmit<"id" | "text" | "pollId", ExtArgs["result"]["option"]>;
+> = runtime.Types.Extensions.GetOmit<
+  "id" | "text" | "position" | "pollId",
+  ExtArgs["result"]["option"]
+>;
 export type OptionInclude<
   ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
@@ -628,6 +720,7 @@ export type $OptionPayload<
     {
       id: string;
       text: string;
+      position: number;
       pollId: string;
     },
     ExtArgs["result"]["option"]
@@ -1197,6 +1290,7 @@ export interface Prisma__OptionClient<
 export interface OptionFieldRefs {
   readonly id: Prisma.FieldRef<"Option", "String">;
   readonly text: Prisma.FieldRef<"Option", "String">;
+  readonly position: Prisma.FieldRef<"Option", "Int">;
   readonly pollId: Prisma.FieldRef<"Option", "String">;
 }
 
