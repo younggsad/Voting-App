@@ -1,8 +1,9 @@
-import { describe, expect, it, vi, beforeEach } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+
+import { ERROR_CODES } from "@/errors/codes";
+import { prisma } from "@/lib/prisma";
 
 import { PollService } from "./poll.service";
-import { prisma } from "@/lib/prisma";
-import { ERROR_CODES } from "@/errors/codes";
 
 vi.mock("@/lib/prisma", () => ({
   prisma: {
@@ -23,7 +24,6 @@ describe("PollService", () => {
     isAnonymous: false,
     isMultipleChoice: false,
     expiresAt: new Date("2026-08-01T12:00:00.000Z"),
-
     options: [
       {
         id: "option-1",
@@ -66,28 +66,41 @@ describe("PollService", () => {
         ],
       });
 
-      expect(prisma.poll.create).toHaveBeenCalledWith(
-        expect.objectContaining({
-          data: {
-            title: "Test poll",
-            description: "Description",
-            isAnonymous: false,
-            isMultipleChoice: false,
-            expiresAt: new Date("2026-08-01T12:00:00.000Z"),
-            options: {
-              create: [
-                {
-                  text: "Option 1",
+      expect(prisma.poll.create).toHaveBeenCalledWith({
+        data: {
+          title: "Test poll",
+          description: "Description",
+          isAnonymous: false,
+          isMultipleChoice: false,
+          expiresAt: new Date("2026-08-01T12:00:00.000Z"),
+          options: {
+            create: [
+              {
+                text: "Option 1",
+                position: 0,
+              },
+              {
+                text: "Option 2",
+                position: 1,
+              },
+            ],
+          },
+        },
+        include: {
+          options: {
+            include: {
+              _count: {
+                select: {
+                  voteOptions: true,
                 },
-                {
-                  text: "Option 2",
-                },
-              ],
+              },
+            },
+            orderBy: {
+              position: "asc",
             },
           },
-          include: expect.anything(),
-        })
-      );
+        },
+      });
 
       expect(result).toEqual({
         id: "poll-1",

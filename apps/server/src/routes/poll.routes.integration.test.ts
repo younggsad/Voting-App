@@ -1,6 +1,7 @@
 import request from "supertest";
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 
+import { ERROR_CODES } from "@/errors/codes";
 import { app } from "@/app";
 import { prisma } from "@/lib/prisma";
 
@@ -20,6 +21,7 @@ describe("Poll API integration", () => {
   afterAll(async () => {
     await prisma.voteOption.deleteMany();
     await prisma.vote.deleteMany();
+    await prisma.session.deleteMany();
     await prisma.option.deleteMany();
     await prisma.poll.deleteMany();
 
@@ -69,6 +71,56 @@ describe("Poll API integration", () => {
 
       expect(response.body.id).toEqual(expect.any(String));
       expect(response.body.options).toHaveLength(2);
+    });
+
+    it("should reject invalid poll data", async () => {
+      const response = await request(app).post("/polls").send({
+        title: "",
+        options: [],
+      });
+
+      expect(response.status).toBe(400);
+    });
+
+    it("should reject poll with less than two options", async () => {
+      const response = await request(app)
+        .post("/polls")
+        .send({
+          title: "Invalid poll",
+          description: "Invalid poll",
+          isAnonymous: false,
+          isMultipleChoice: false,
+          expiresAt: "2026-12-01T12:00:00.000Z",
+          options: [
+            {
+              text: "Only option",
+            },
+          ],
+        });
+
+      expect(response.status).toBe(400);
+    });
+
+    it("should reject poll with duplicate options", async () => {
+      const response = await request(app)
+        .post("/polls")
+        .send({
+          title: "Duplicate options",
+          description: "Invalid poll",
+          isAnonymous: false,
+          isMultipleChoice: false,
+          expiresAt: "2026-12-01T12:00:00.000Z",
+          options: [
+            {
+              text: "Option 1",
+            },
+            {
+              text: "Option 1",
+            },
+          ],
+        });
+
+      expect(response.status).toBe(400);
     });
   });
 
@@ -202,7 +254,7 @@ describe("Poll API integration", () => {
       expect(response.status).toBe(404);
 
       expect(response.body).toMatchObject({
-        code: "POLL_NOT_FOUND",
+        code: ERROR_CODES.POLL_NOT_FOUND,
       });
     });
   });
