@@ -1,4 +1,5 @@
 import type { FieldArrayWithId, FieldErrors, UseFormRegister } from "react-hook-form";
+
 import type { PollFormValues } from "../schemas/poll.schema";
 import { PollOptionField } from "./PollOptionField";
 
@@ -11,7 +12,7 @@ interface PollOptionsProps {
 }
 
 // Блок управления вариантами ответа опроса
-export function PollOptions({ fields, register, append, remove }: PollOptionsProps) {
+export function PollOptions({ fields, register, append, remove, errors }: PollOptionsProps) {
   return (
     <fieldset>
       <legend>Options</legend>
@@ -21,18 +22,21 @@ export function PollOptions({ fields, register, append, remove }: PollOptionsPro
           key={field.id}
           index={index}
           register={register}
+          error={errors.options?.[index]?.text}
           canRemove={fields.length > 2}
           onRemove={() => remove(index)}
         />
       ))}
 
+      {errors.options?.message && <p>{errors.options.message}</p>}
+
       <button
         type="button"
-        onClick={() =>
+        onClick={() => {
           append({
             text: "",
-          })
-        }
+          });
+        }}
       >
         Add option
       </button>

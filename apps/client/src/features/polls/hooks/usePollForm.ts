@@ -69,5 +69,6 @@ export const usePollForm = () => {
     onSubmit,
 
     isPending: createPollMutation.isPending,
+    error: createPollMutation.error,
   };
 };

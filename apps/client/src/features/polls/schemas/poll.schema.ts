@@ -9,7 +9,19 @@ export const pollSchema = z.object({
 
   isMultipleChoice: z.boolean(),
 
-  expiresAt: z.string().min(1, "Выберите дату окончания"),
+  expiresAt: z
+    .string()
+    .min(1, "Выберите дату окончания")
+    .refine(
+      (value) => {
+        const date = new Date(value);
+
+        return !Number.isNaN(date.getTime()) && date.getTime() > Date.now();
+      },
+      {
+        message: "Дата окончания должна быть в будущем",
+      }
+    ),
 
   options: z
     .array(
