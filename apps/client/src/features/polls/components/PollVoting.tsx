@@ -2,6 +2,7 @@ import { useState } from "react";
 
 import type { Poll } from "../types";
 import { useVote } from "../hooks/useVote";
+import { getApiErrorMessage } from "@/shared/api/api-error-message";
 
 interface PollVotingProps {
   poll: Poll;
@@ -64,8 +65,11 @@ export function PollVoting({ poll, onVoted }: PollVotingProps) {
         })}
       </fieldset>
 
-      {voteMutation.isError && <p role="alert">Failed to submit vote. Please try again.</p>}
-
+      {voteMutation.isError && (
+        <p role="alert">
+          {getApiErrorMessage(voteMutation.error, "Failed to submit vote. Please try again.")}
+        </p>
+      )}
       <button
         type="button"
         disabled={selectedOptions.length === 0 || voteMutation.isPending}

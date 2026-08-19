@@ -20,10 +20,14 @@ export class ApiError extends Error {
 
 export const normalizeApiError = (error: unknown): ApiError => {
   if (axios.isAxiosError<ApiErrorResponse>(error)) {
+    if (!error.response) {
+      return new ApiError(0, "Unable to connect to the server", "NETWORK_ERROR");
+    }
+
     return new ApiError(
-      error.response?.status ?? 500,
-      error.response?.data?.message ?? "Something went wrong",
-      error.response?.data?.code
+      error.response.status,
+      error.response.data?.message ?? "Something went wrong",
+      error.response.data?.code
     );
   }
 

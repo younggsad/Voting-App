@@ -5,7 +5,8 @@ import { useFieldArray, useForm } from "react-hook-form";
 import { useCreatePoll } from "./useCreatePoll";
 import { pollSchema, type PollFormValues } from "../schemas/poll.schema";
 
-// Значения формы по умолчанию
+import { getApiErrorMessage } from "@/shared/api/api-error-message";
+
 const defaultValues: PollFormValues = {
   title: "",
   description: "",
@@ -15,10 +16,8 @@ const defaultValues: PollFormValues = {
   options: [{ text: "" }, { text: "" }],
 };
 
-// Хук, содержащий всю бизнес-логику формы создания опроса
 export const usePollForm = () => {
   const navigate = useNavigate();
-
   const createPollMutation = useCreatePoll();
 
   const form = useForm<PollFormValues>({
@@ -31,13 +30,11 @@ export const usePollForm = () => {
     formState: { errors },
   } = form;
 
-  // Управление динамическим списком вариантов ответа
   const { fields, append, remove } = useFieldArray({
     control,
     name: "options",
   });
 
-  // Отправка формы
   const onSubmit = (data: PollFormValues) => {
     createPollMutation.mutate(
       {
@@ -69,6 +66,11 @@ export const usePollForm = () => {
     onSubmit,
 
     isPending: createPollMutation.isPending,
+
+    isError: createPollMutation.isError,
     error: createPollMutation.error,
+    errorMessage: createPollMutation.isError
+      ? getApiErrorMessage(createPollMutation.error, "Failed to create poll.")
+      : null,
   };
 };
