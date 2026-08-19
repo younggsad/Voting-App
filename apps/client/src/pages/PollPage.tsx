@@ -1,5 +1,7 @@
+import { useState } from "react";
 import { useParams } from "@tanstack/react-router";
 
+import { PollVoting } from "@/features/polls/components/PollVoting";
 import { PollResults } from "@/features/polls/components/PollResults";
 import { usePoll } from "@/features/polls/hooks/usePoll";
 
@@ -13,6 +15,8 @@ export function PollPage() {
 
   const { data: poll, isPending, isError } = usePoll(id);
 
+  const [hasVoted, setHasVoted] = useState(false);
+
   if (isPending) {
     return <Loading />;
   }
@@ -23,7 +27,11 @@ export function PollPage() {
 
   return (
     <main>
-      <PollResults poll={poll} />
+      {!hasVoted ? (
+        <PollVoting poll={poll} onVoted={() => setHasVoted(true)} />
+      ) : (
+        <PollResults poll={poll} />
+      )}
     </main>
   );
 }
