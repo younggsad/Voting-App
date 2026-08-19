@@ -15,22 +15,18 @@ export function PollForm() {
     onSubmit,
 
     isPending,
-    error,
+    errorMessage,
   } = usePollForm();
 
   return (
     <section>
       <h2>Create poll</h2>
 
-      {error && <p role="alert">Failed to create poll. Please try again.</p>}
-
       <form onSubmit={handleSubmit(onSubmit)}>
         <div>
           <label htmlFor="title">Title</label>
 
           <input id="title" type="text" placeholder="Enter poll title" {...register("title")} />
-
-          {error && <p role="alert">{error.message}</p>}
         </div>
 
         <PollSettings register={register} errors={errors} />
@@ -42,6 +38,8 @@ export function PollForm() {
           remove={remove}
           errors={errors}
         />
+
+        {errorMessage && <p role="alert">{errorMessage}</p>}
 
         <button type="submit" disabled={isPending}>
           {isPending ? "Creating..." : "Create poll"}

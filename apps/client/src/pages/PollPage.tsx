@@ -7,13 +7,14 @@ import { usePoll } from "@/features/polls/hooks/usePoll";
 
 import { Loading } from "@/shared/ui/Loading";
 import { ErrorMessage } from "@/shared/ui/ErrorMessage";
+import { getApiErrorMessage } from "@/shared/api/api-error-message";
 
 export function PollPage() {
   const { id } = useParams({
     from: "/poll/$id",
   });
 
-  const { data: poll, isPending, isError } = usePoll(id);
+  const { data: poll, isPending, isError, error } = usePoll(id);
 
   const [hasVoted, setHasVoted] = useState(false);
 
@@ -22,7 +23,7 @@ export function PollPage() {
   }
 
   if (isError || !poll) {
-    return <ErrorMessage message="Poll not found" />;
+    return <ErrorMessage message={getApiErrorMessage(error, "Failed to load poll.")} />;
   }
 
   return (
