@@ -6,6 +6,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { server } from "@/test/handlers/server";
 
 import { PollPage } from "./PollPage";
+import { createTestPoll } from "@/test/handlers/polls.handlers";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -101,6 +102,46 @@ describe("PollPage voting integration", () => {
 
     await waitFor(() => {
       expect(screen.getByRole("alert")).toHaveTextContent("You have already voted in this poll.");
+    });
+  });
+
+  it("should show poll results when user has already voted", async () => {
+    server.use(
+      http.get(`${API_URL}/polls/:id`, ({ params }) => {
+        return HttpResponse.json({
+          ...createTestPoll(true),
+          id: params.id,
+        });
+      })
+    );
+
+    renderPollPage();
+
+    await waitFor(() => {
+      expect(screen.getByText("Option 1")).toBeInTheDocument();
+    });
+
+    expect(screen.getByText("10 votes")).toBeInTheDocument();
+    expect(screen.getByText("5 votes")).toBeInTheDocument();
+  });
+
+  it("should show error when poll is not found", async () => {
+    server.use(
+      http.get(`${API_URL}/polls/:id`, () => {
+        return HttpResponse.json(
+          {
+            code: "POLL_NOT_FOUND",
+            message: "Poll not found",
+          },
+          { status: 404 }
+        );
+      })
+    );
+
+    renderPollPage();
+
+    await waitFor(() => {
+      expect(screen.getByRole("alert")).toHaveTextContent("Poll not found.");
     });
   });
 });
