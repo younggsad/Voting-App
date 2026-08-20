@@ -10,6 +10,14 @@ import pollRoutes from "./poll.routes";
 const POLL_ID = "550e8400-e29b-41d4-a716-446655440000";
 const OPTION_ID_1 = "550e8400-e29b-41d4-a716-446655440001";
 const OPTION_ID_2 = "550e8400-e29b-41d4-a716-446655440002";
+const SESSION_ID = "session-1";
+
+vi.mock("@/middlewares/session.middleware", () => ({
+  sessionMiddleware: (req: { sessionId?: string }, _res: unknown, next: () => void) => {
+    req.sessionId = SESSION_ID;
+    next();
+  },
+}));
 
 const createApp = () => {
   const app = express();
@@ -177,6 +185,7 @@ describe("Poll routes", () => {
             votesCount: 3,
           },
         ],
+        hasVoted: false,
       };
 
       const findByIdSpy = vi.spyOn(PollService.prototype, "findById").mockResolvedValue(pollResult);
@@ -206,10 +215,11 @@ describe("Poll routes", () => {
             votesCount: 3,
           },
         ],
+        hasVoted: false,
       });
 
       expect(findByIdSpy).toHaveBeenCalledOnce();
-      expect(findByIdSpy).toHaveBeenCalledWith(POLL_ID);
+      expect(findByIdSpy).toHaveBeenCalledWith(POLL_ID, SESSION_ID);
     });
 
     it("should propagate service errors to error middleware", async () => {
@@ -231,7 +241,7 @@ describe("Poll routes", () => {
       });
 
       expect(findByIdSpy).toHaveBeenCalledOnce();
-      expect(findByIdSpy).toHaveBeenCalledWith(POLL_ID);
+      expect(findByIdSpy).toHaveBeenCalledWith(POLL_ID, SESSION_ID);
     });
   });
 });

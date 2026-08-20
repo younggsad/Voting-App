@@ -2,7 +2,7 @@ import { ERROR_CODES } from "@/errors/codes";
 import { NotFoundError } from "@/errors/not-found.error";
 import { prisma } from "@/lib/prisma";
 import { pollResultsInclude } from "@/lib/prisma/includes";
-import { mapPollToResponse, type PollResponse } from "@/mappers/poll.mapper";
+import { mapPollToResponse, PollDetailsResponse, type PollResponse } from "@/mappers/poll.mapper";
 import type { CreatePollDto } from "@/validators/poll.validator";
 
 export class PollService {
@@ -29,12 +29,11 @@ export class PollService {
     return mapPollToResponse(poll);
   }
 
-  async findById(id: string): Promise<PollResponse> {
+  async findById(id: string, sessionId: string): Promise<PollDetailsResponse> {
     const poll = await prisma.poll.findUnique({
       where: {
         id,
       },
-
       include: pollResultsInclude,
     });
 
@@ -42,6 +41,21 @@ export class PollService {
       throw new NotFoundError("Poll not found", undefined, ERROR_CODES.POLL_NOT_FOUND);
     }
 
-    return mapPollToResponse(poll);
+    const vote = await prisma.vote.findUnique({
+      where: {
+        pollId_sessionId: {
+          pollId: id,
+          sessionId,
+        },
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    return {
+      ...mapPollToResponse(poll),
+      hasVoted: Boolean(vote),
+    };
   }
 }

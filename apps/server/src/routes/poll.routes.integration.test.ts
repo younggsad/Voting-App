@@ -1,8 +1,8 @@
 import request from "supertest";
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 
-import { ERROR_CODES } from "@/errors/codes";
 import { app } from "@/app";
+import { ERROR_CODES } from "@/errors/codes";
 import { prisma } from "@/lib/prisma";
 
 describe("Poll API integration", () => {
@@ -231,6 +231,7 @@ describe("Poll API integration", () => {
         description: "Poll with votes",
         isAnonymous: false,
         isMultipleChoice: false,
+        hasVoted: false,
         options: expect.arrayContaining([
           {
             id: option1.id,
@@ -256,6 +257,130 @@ describe("Poll API integration", () => {
       expect(response.body).toMatchObject({
         code: ERROR_CODES.POLL_NOT_FOUND,
       });
+    });
+
+    it("should return hasVoted true for a session that has voted", async () => {
+      const agent = request.agent(app);
+
+      const poll = await prisma.poll.create({
+        data: {
+          title: "Has voted test",
+          isAnonymous: false,
+          isMultipleChoice: false,
+          expiresAt: new Date("2026-12-01T12:00:00.000Z"),
+          options: {
+            create: [
+              {
+                text: "Option 1",
+                position: 0,
+              },
+              {
+                text: "Option 2",
+                position: 1,
+              },
+            ],
+          },
+        },
+        include: {
+          options: true,
+        },
+      });
+
+      const voteResponse = await agent.post(`/polls/${poll.id}/vote`).send({
+        optionIds: [poll.options[0].id],
+      });
+
+      expect(voteResponse.status).toBe(201);
+
+      const response = await agent.get(`/polls/${poll.id}`);
+
+      expect(response.status).toBe(200);
+      expect(response.body.hasVoted).toBe(true);
+    });
+
+    it("should return hasVoted true for a session that has voted", async () => {
+      const poll = await prisma.poll.create({
+        data: {
+          title: "Has voted test",
+          isAnonymous: false,
+          isMultipleChoice: false,
+          expiresAt: new Date("2026-12-01T12:00:00.000Z"),
+          options: {
+            create: [
+              {
+                text: "Option 1",
+                position: 0,
+              },
+              {
+                text: "Option 2",
+                position: 1,
+              },
+            ],
+          },
+        },
+        include: {
+          options: true,
+        },
+      });
+
+      const option = poll.options[0];
+
+      const agent = request.agent(app);
+
+      const voteResponse = await agent.post(`/polls/${poll.id}/vote`).send({
+        optionIds: [option.id],
+      });
+
+      expect(voteResponse.status).toBe(201);
+
+      const response = await agent.get(`/polls/${poll.id}`);
+
+      expect(response.status).toBe(200);
+      expect(response.body.hasVoted).toBe(true);
+    });
+
+    it("should return hasVoted false for another session", async () => {
+      const firstAgent = request.agent(app);
+      const secondAgent = request.agent(app);
+
+      const poll = await prisma.poll.create({
+        data: {
+          title: "Has voted test",
+          isAnonymous: false,
+          isMultipleChoice: false,
+          expiresAt: new Date("2026-12-01T12:00:00.000Z"),
+          options: {
+            create: [
+              {
+                text: "Option 1",
+                position: 0,
+              },
+              {
+                text: "Option 2",
+                position: 1,
+              },
+            ],
+          },
+        },
+        include: {
+          options: true,
+        },
+      });
+
+      const voteResponse = await firstAgent.post(`/polls/${poll.id}/vote`).send({
+        optionIds: [poll.options[0].id],
+      });
+
+      expect(voteResponse.status).toBe(201);
+
+      const firstResponse = await firstAgent.get(`/polls/${poll.id}`);
+      const secondResponse = await secondAgent.get(`/polls/${poll.id}`);
+
+      expect(firstResponse.status).toBe(200);
+      expect(secondResponse.status).toBe(200);
+
+      expect(firstResponse.body.hasVoted).toBe(true);
+      expect(secondResponse.body.hasVoted).toBe(false);
     });
   });
 });

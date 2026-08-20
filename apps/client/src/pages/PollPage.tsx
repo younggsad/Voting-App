@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useParams } from "@tanstack/react-router";
 
 import { PollVoting } from "@/features/polls/components/PollVoting";
@@ -16,8 +15,6 @@ export function PollPage() {
 
   const { data: poll, isPending, isError, error } = usePoll(id);
 
-  const [hasVoted, setHasVoted] = useState(false);
-
   if (isPending) {
     return <Loading />;
   }
@@ -26,13 +23,5 @@ export function PollPage() {
     return <ErrorMessage message={getApiErrorMessage(error, "Failed to load poll.")} />;
   }
 
-  return (
-    <main>
-      {!hasVoted ? (
-        <PollVoting poll={poll} onVoted={() => setHasVoted(true)} />
-      ) : (
-        <PollResults poll={poll} />
-      )}
-    </main>
-  );
+  return <main>{poll.hasVoted ? <PollResults poll={poll} /> : <PollVoting poll={poll} />}</main>;
 }

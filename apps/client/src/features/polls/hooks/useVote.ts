@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import { createVote } from "@/features/polls/api/votes.api";
+import { createVote } from "../api/polls.api";
 import { pollKeys } from "@/features/polls/query/poll.keys";
 
 export const useVote = (pollId: string) => {

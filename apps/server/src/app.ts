@@ -5,9 +5,11 @@ import rateLimit from "express-rate-limit";
 import helmet from "helmet";
 
 import { NotFoundError } from "@/errors/not-found.error";
-import { errorMiddleware } from "@/middlewares/error.middleware";
+
 import pollRoutes from "@/routes/poll.routes";
 import voteRoutes from "@/routes/vote.routes";
+
+import { errorMiddleware } from "@/middlewares/error.middleware";
 
 export const app = express();
 
