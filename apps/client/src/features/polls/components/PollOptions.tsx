@@ -11,7 +11,6 @@ interface PollOptionsProps {
   remove: (index: number) => void;
 }
 
-// Блок управления вариантами ответа опроса
 export function PollOptions({ fields, register, append, remove, errors }: PollOptionsProps) {
   return (
     <fieldset>

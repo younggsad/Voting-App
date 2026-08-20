@@ -23,12 +23,15 @@ export interface PollResponse {
   isAnonymous: boolean;
   isMultipleChoice: boolean;
   expiresAt: Date;
-
   options: {
     id: string;
     text: string;
     votesCount: number;
   }[];
+}
+
+export interface PollDetailsResponse extends PollResponse {
+  hasVoted: boolean;
 }
 
 // Преобразует модель Prisma в ответ API

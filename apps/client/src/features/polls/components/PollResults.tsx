@@ -6,7 +6,6 @@ interface PollResultsProps {
   poll: Poll;
 }
 
-// Отображение результатов опроса
 export function PollResults({ poll }: PollResultsProps) {
   return (
     <section>

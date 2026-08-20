@@ -16,7 +16,7 @@ export class PollController {
   };
 
   findById = async (req: Request<{ id: string }, unknown>, res: Response): Promise<void> => {
-    const poll = await this.pollService.findById(req.params.id);
+    const poll = await this.pollService.findById(req.params.id, req.sessionId!);
 
     res.json(poll);
   };

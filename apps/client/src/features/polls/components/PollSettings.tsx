@@ -8,7 +8,6 @@ interface PollSettingsProps {
   errors: FieldErrors<PollFormValues>;
 }
 
-// Настройки опроса
 export function PollSettings({ register, errors }: PollSettingsProps) {
   return (
     <section>

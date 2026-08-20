@@ -11,6 +11,9 @@ vi.mock("@/lib/prisma", () => ({
       create: vi.fn(),
       findUnique: vi.fn(),
     },
+    vote: {
+      findUnique: vi.fn(),
+    },
   },
 }));
 
@@ -44,6 +47,8 @@ describe("PollService", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+
+    vi.mocked(prisma.vote.findUnique).mockResolvedValue(null);
   });
 
   describe("create", () => {
@@ -152,10 +157,11 @@ describe("PollService", () => {
   });
 
   describe("findById", () => {
-    it("should return poll with mapped results", async () => {
+    it("should return poll with mapped results and hasVoted false", async () => {
       vi.mocked(prisma.poll.findUnique).mockResolvedValue(mockPoll as never);
+      vi.mocked(prisma.vote.findUnique).mockResolvedValue(null);
 
-      const result = await service.findById("poll-1");
+      const result = await service.findById("poll-1", "session-1");
 
       expect(prisma.poll.findUnique).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -165,6 +171,18 @@ describe("PollService", () => {
           include: expect.anything(),
         })
       );
+
+      expect(prisma.vote.findUnique).toHaveBeenCalledWith({
+        where: {
+          pollId_sessionId: {
+            pollId: "poll-1",
+            sessionId: "session-1",
+          },
+        },
+        select: {
+          id: true,
+        },
+      });
 
       expect(result).toEqual({
         id: "poll-1",
@@ -185,13 +203,38 @@ describe("PollService", () => {
             votesCount: 0,
           },
         ],
+        hasVoted: false,
+      });
+    });
+
+    it("should return hasVoted true when session has voted", async () => {
+      vi.mocked(prisma.poll.findUnique).mockResolvedValue(mockPoll as never);
+
+      vi.mocked(prisma.vote.findUnique).mockResolvedValue({
+        id: "vote-1",
+      } as never);
+
+      const result = await service.findById("poll-1", "session-1");
+
+      expect(result.hasVoted).toBe(true);
+
+      expect(prisma.vote.findUnique).toHaveBeenCalledWith({
+        where: {
+          pollId_sessionId: {
+            pollId: "poll-1",
+            sessionId: "session-1",
+          },
+        },
+        select: {
+          id: true,
+        },
       });
     });
 
     it("should throw POLL_NOT_FOUND when poll does not exist", async () => {
       vi.mocked(prisma.poll.findUnique).mockResolvedValue(null);
 
-      await expect(service.findById("poll-1")).rejects.toMatchObject({
+      await expect(service.findById("poll-1", "session-1")).rejects.toMatchObject({
         statusCode: 404,
         code: ERROR_CODES.POLL_NOT_FOUND,
       });
@@ -203,16 +246,31 @@ describe("PollService", () => {
           },
         })
       );
+
+      expect(prisma.vote.findUnique).not.toHaveBeenCalled();
     });
 
-    it("should propagate database errors", async () => {
+    it("should propagate database errors from poll query", async () => {
       const databaseError = new Error("Database error");
 
       vi.mocked(prisma.poll.findUnique).mockRejectedValue(databaseError);
 
-      await expect(service.findById("poll-1")).rejects.toThrow("Database error");
+      await expect(service.findById("poll-1", "session-1")).rejects.toThrow("Database error");
 
       expect(prisma.poll.findUnique).toHaveBeenCalledOnce();
+      expect(prisma.vote.findUnique).not.toHaveBeenCalled();
+    });
+
+    it("should propagate database errors from vote query", async () => {
+      const databaseError = new Error("Database error");
+
+      vi.mocked(prisma.poll.findUnique).mockResolvedValue(mockPoll as never);
+      vi.mocked(prisma.vote.findUnique).mockRejectedValue(databaseError);
+
+      await expect(service.findById("poll-1", "session-1")).rejects.toThrow("Database error");
+
+      expect(prisma.poll.findUnique).toHaveBeenCalledOnce();
+      expect(prisma.vote.findUnique).toHaveBeenCalledOnce();
     });
   });
 });

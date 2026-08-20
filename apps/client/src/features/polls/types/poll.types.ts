@@ -11,5 +11,6 @@ export interface Poll {
   isAnonymous: boolean;
   isMultipleChoice: boolean;
   expiresAt: string;
+  hasVoted: boolean;
   options: PollOption[];
 }

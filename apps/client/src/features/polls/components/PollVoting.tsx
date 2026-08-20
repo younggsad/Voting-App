@@ -1,15 +1,15 @@
 import { useState } from "react";
 
-import type { Poll } from "../types";
-import { useVote } from "../hooks/useVote";
 import { getApiErrorMessage } from "@/shared/api/api-error-message";
+
+import { useVote } from "../hooks/useVote";
+import type { Poll } from "../types";
 
 interface PollVotingProps {
   poll: Poll;
-  onVoted: () => void;
 }
 
-export function PollVoting({ poll, onVoted }: PollVotingProps) {
+export function PollVoting({ poll }: PollVotingProps) {
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
 
   const voteMutation = useVote(poll.id);
@@ -29,23 +29,29 @@ export function PollVoting({ poll, onVoted }: PollVotingProps) {
   };
 
   const handleSubmit = () => {
-    if (selectedOptions.length === 0) {
+    if (selectedOptions.length === 0 || voteMutation.isPending) {
       return;
     }
 
-    voteMutation.mutate(selectedOptions, {
-      onSuccess: () => {
-        onVoted();
-      },
-    });
+    voteMutation.mutate(selectedOptions);
   };
 
+  const errorMessage = voteMutation.isError
+    ? getApiErrorMessage(voteMutation.error, "Failed to submit vote. Please try again.")
+    : null;
+
   return (
-    <section>
-      <h2>Vote</h2>
+    <section aria-labelledby="poll-voting-title">
+      <header>
+        <h1 id="poll-voting-title">{poll.title}</h1>
+
+        {poll.description && <p>{poll.description}</p>}
+      </header>
 
       <fieldset disabled={voteMutation.isPending}>
-        <legend>Select your answer</legend>
+        <legend>
+          {poll.isMultipleChoice ? "Select one or more options" : "Select one option"}
+        </legend>
 
         {poll.options.map((option) => {
           const isSelected = selectedOptions.includes(option.id);
@@ -55,21 +61,23 @@ export function PollVoting({ poll, onVoted }: PollVotingProps) {
               <input
                 type={poll.isMultipleChoice ? "checkbox" : "radio"}
                 name="poll-option"
+                value={option.id}
                 checked={isSelected}
                 onChange={() => handleOptionChange(option.id)}
               />
 
-              {option.text}
+              <span>{option.text}</span>
             </label>
           );
         })}
       </fieldset>
 
-      {voteMutation.isError && (
-        <p role="alert">
-          {getApiErrorMessage(voteMutation.error, "Failed to submit vote. Please try again.")}
+      {errorMessage && (
+        <p role="alert" aria-live="polite">
+          {errorMessage}
         </p>
       )}
+
       <button
         type="button"
         disabled={selectedOptions.length === 0 || voteMutation.isPending}

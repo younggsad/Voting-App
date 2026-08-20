@@ -117,6 +117,7 @@ describe("PollController", () => {
   describe("findById", () => {
     it("should return poll by id", async () => {
       const pollId = "poll-1";
+      const sessionId = "session-1";
 
       const poll = {
         id: pollId,
@@ -137,6 +138,7 @@ describe("PollController", () => {
             votesCount: 3,
           },
         ],
+        hasVoted: false,
       };
 
       const findByIdSpy = vi.spyOn(PollService.prototype, "findById").mockResolvedValue(poll);
@@ -147,6 +149,7 @@ describe("PollController", () => {
         params: {
           id: pollId,
         },
+        sessionId,
       } as Request<{ id: string }>;
 
       const res = {
@@ -156,7 +159,7 @@ describe("PollController", () => {
       await controller.findById(req, res);
 
       expect(findByIdSpy).toHaveBeenCalledOnce();
-      expect(findByIdSpy).toHaveBeenCalledWith(pollId);
+      expect(findByIdSpy).toHaveBeenCalledWith(pollId, sessionId);
 
       expect(res.json).toHaveBeenCalledOnce();
       expect(res.json).toHaveBeenCalledWith(poll);
@@ -164,6 +167,7 @@ describe("PollController", () => {
 
     it("should propagate service errors", async () => {
       const serviceError = new Error("Poll not found");
+      const sessionId = "session-1";
 
       const findByIdSpy = vi
         .spyOn(PollService.prototype, "findById")
@@ -175,6 +179,7 @@ describe("PollController", () => {
         params: {
           id: "poll-1",
         },
+        sessionId,
       } as Request<{ id: string }>;
 
       const res = {
@@ -184,7 +189,7 @@ describe("PollController", () => {
       await expect(controller.findById(req, res)).rejects.toBe(serviceError);
 
       expect(findByIdSpy).toHaveBeenCalledOnce();
-      expect(findByIdSpy).toHaveBeenCalledWith("poll-1");
+      expect(findByIdSpy).toHaveBeenCalledWith("poll-1", sessionId);
 
       expect(res.json).not.toHaveBeenCalled();
     });
