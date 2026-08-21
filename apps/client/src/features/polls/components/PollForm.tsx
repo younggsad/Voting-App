@@ -2,31 +2,40 @@ import { PollOptions } from "./PollOptions";
 import { PollSettings } from "./PollSettings";
 import { usePollForm } from "../hooks/usePollForm";
 
+import styles from "./PollForm.module.css";
+
 export function PollForm() {
   const {
     register,
     handleSubmit,
     errors,
-
     fields,
     append,
     remove,
-
     onSubmit,
-
     isPending,
     errorMessage,
   } = usePollForm();
 
   return (
-    <section>
-      <h2>Create poll</h2>
+    <section className={styles.section}>
+      <div className={styles.header}>
+        <h2>Configure your question, options, and voting settings.</h2>
+      </div>
 
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div>
+      <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
+        <div className={styles.field}>
           <label htmlFor="title">Title</label>
 
-          <input id="title" type="text" placeholder="Enter poll title" {...register("title")} />
+          <input
+            id="title"
+            type="text"
+            placeholder="Enter poll title"
+            {...register("title")}
+            aria-invalid={Boolean(errors.title)}
+          />
+
+          {errors.title && <p className={styles.fieldError}>{errors.title.message}</p>}
         </div>
 
         <PollSettings register={register} errors={errors} />
@@ -39,9 +48,13 @@ export function PollForm() {
           errors={errors}
         />
 
-        {errorMessage && <p role="alert">{errorMessage}</p>}
+        {errorMessage && (
+          <p className={styles.formError} role="alert">
+            {errorMessage}
+          </p>
+        )}
 
-        <button type="submit" disabled={isPending}>
+        <button className={styles.submitButton} type="submit" disabled={isPending}>
           {isPending ? "Creating..." : "Create poll"}
         </button>
       </form>

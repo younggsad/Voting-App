@@ -6,7 +6,7 @@ import { mapPollToResponse, PollDetailsResponse, type PollResponse } from "@/map
 import type { CreatePollDto } from "@/validators/poll.validator";
 
 export class PollService {
-  async create(data: CreatePollDto): Promise<PollResponse> {
+  async create(data: CreatePollDto, sessionId: string): Promise<PollResponse> {
     const poll = await prisma.poll.create({
       data: {
         title: data.title,
@@ -14,6 +14,7 @@ export class PollService {
         isAnonymous: data.isAnonymous,
         isMultipleChoice: data.isMultipleChoice,
         expiresAt: new Date(data.expiresAt),
+        createdBySessionId: sessionId,
 
         options: {
           create: data.options.map((option, index) => ({
@@ -22,7 +23,6 @@ export class PollService {
           })),
         },
       },
-
       include: pollResultsInclude,
     });
 
@@ -57,5 +57,27 @@ export class PollService {
       ...mapPollToResponse(poll),
       hasVoted: Boolean(vote),
     };
+  }
+
+  async findMine(sessionId: string): Promise<PollResponse[]> {
+    const polls = await prisma.poll.findMany({
+      where: {
+        createdBySessionId: sessionId,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+      include: pollResultsInclude,
+    });
+
+    console.log(
+      "[MINE] polls:",
+      polls.map((poll) => ({
+        id: poll.id,
+        createdBySessionId: poll.createdBySessionId,
+      }))
+    );
+
+    return polls.map(mapPollToResponse);
   }
 }

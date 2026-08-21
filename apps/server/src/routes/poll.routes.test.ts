@@ -105,7 +105,7 @@ describe("Poll routes", () => {
       });
 
       expect(createSpy).toHaveBeenCalledOnce();
-      expect(createSpy).toHaveBeenCalledWith(payload);
+      expect(createSpy).toHaveBeenCalledWith(payload, "session-1");
     });
 
     it("should return 400 for invalid poll data", async () => {

@@ -80,6 +80,7 @@ export const PollScalarFieldEnum = {
   expiresAt: "expiresAt",
   createdAt: "createdAt",
   updatedAt: "updatedAt",
+  createdBySessionId: "createdBySessionId",
 } as const;
 
 export type PollScalarFieldEnum = (typeof PollScalarFieldEnum)[keyof typeof PollScalarFieldEnum];

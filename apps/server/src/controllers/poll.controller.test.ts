@@ -56,6 +56,7 @@ describe("PollController", () => {
 
       const req = {
         body,
+        sessionId: "session-1",
       } as Request<Record<string, never>, unknown, CreatePollDto>;
 
       const res = {
@@ -66,7 +67,7 @@ describe("PollController", () => {
       await controller.create(req, res);
 
       expect(createSpy).toHaveBeenCalledOnce();
-      expect(createSpy).toHaveBeenCalledWith(body);
+      expect(createSpy).toHaveBeenCalledWith(body, "session-1");
 
       expect(res.status).toHaveBeenCalledOnce();
       expect(res.status).toHaveBeenCalledWith(201);
@@ -97,6 +98,7 @@ describe("PollController", () => {
 
       const req = {
         body,
+        sessionId: "session-1",
       } as Request<Record<string, never>, unknown, CreatePollDto>;
 
       const res = {
@@ -107,7 +109,7 @@ describe("PollController", () => {
       await expect(controller.create(req, res)).rejects.toBe(serviceError);
 
       expect(createSpy).toHaveBeenCalledOnce();
-      expect(createSpy).toHaveBeenCalledWith(body);
+      expect(createSpy).toHaveBeenCalledWith(body, "session-1");
 
       expect(res.status).not.toHaveBeenCalled();
       expect(res.json).not.toHaveBeenCalled();

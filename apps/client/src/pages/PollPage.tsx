@@ -23,5 +23,5 @@ export function PollPage() {
     return <ErrorMessage message={getApiErrorMessage(error, "Failed to load poll.")} />;
   }
 
-  return <main>{poll.hasVoted ? <PollResults poll={poll} /> : <PollVoting poll={poll} />}</main>;
+  return <div>{poll.hasVoted ? <PollResults poll={poll} /> : <PollVoting poll={poll} />}</div>;
 }

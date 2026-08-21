@@ -16,9 +16,16 @@ describe("Vote API integration", () => {
   beforeEach(async () => {
     await prisma.voteOption.deleteMany();
     await prisma.vote.deleteMany();
-    await prisma.session.deleteMany();
-    await prisma.option.deleteMany();
     await prisma.poll.deleteMany();
+    await prisma.option.deleteMany();
+    await prisma.session.deleteMany();
+
+    const session = await prisma.session.create({
+      data: {
+        tokenHash: "vote-test-creator-session",
+        expiresAt: new Date("2026-12-01T12:00:00.000Z"),
+      },
+    });
 
     const poll = await prisma.poll.create({
       data: {
@@ -27,6 +34,13 @@ describe("Vote API integration", () => {
         isAnonymous: false,
         isMultipleChoice: false,
         expiresAt: new Date("2026-12-01T12:00:00.000Z"),
+
+        createdBySession: {
+          connect: {
+            id: session.id,
+          },
+        },
+
         options: {
           create: [
             {
@@ -52,9 +66,9 @@ describe("Vote API integration", () => {
   afterAll(async () => {
     await prisma.voteOption.deleteMany();
     await prisma.vote.deleteMany();
-    await prisma.session.deleteMany();
-    await prisma.option.deleteMany();
     await prisma.poll.deleteMany();
+    await prisma.option.deleteMany();
+    await prisma.session.deleteMany();
 
     await prisma.$disconnect();
   });
@@ -153,6 +167,13 @@ describe("Vote API integration", () => {
         },
       });
 
+      const session = await prisma.session.create({
+        data: {
+          tokenHash: "multiple-choice-creator-session",
+          expiresAt: new Date("2026-12-01T12:00:00.000Z"),
+        },
+      });
+
       const poll = await prisma.poll.create({
         data: {
           title: "Multiple choice poll",
@@ -160,6 +181,13 @@ describe("Vote API integration", () => {
           isAnonymous: false,
           isMultipleChoice: true,
           expiresAt: new Date("2026-12-01T12:00:00.000Z"),
+
+          createdBySession: {
+            connect: {
+              id: session.id,
+            },
+          },
+
           options: {
             create: [
               {
@@ -206,12 +234,26 @@ describe("Vote API integration", () => {
         },
       });
 
+      const session = await prisma.session.create({
+        data: {
+          tokenHash: "expired-poll-creator-session",
+          expiresAt: new Date("2026-12-01T12:00:00.000Z"),
+        },
+      });
+
       const poll = await prisma.poll.create({
         data: {
           title: "Expired poll",
           isAnonymous: false,
           isMultipleChoice: false,
           expiresAt: new Date("2025-01-01T00:00:00.000Z"),
+
+          createdBySession: {
+            connect: {
+              id: session.id,
+            },
+          },
+
           options: {
             create: {
               text: "Option 1",
@@ -246,12 +288,26 @@ describe("Vote API integration", () => {
     });
 
     it("should reject multiple options for single-choice poll", async () => {
+      const session = await prisma.session.create({
+        data: {
+          tokenHash: "single-choice-creator-session",
+          expiresAt: new Date("2026-12-01T12:00:00.000Z"),
+        },
+      });
+
       const poll = await prisma.poll.create({
         data: {
           title: "Single choice poll",
           isAnonymous: false,
           isMultipleChoice: false,
           expiresAt: new Date("2026-12-01T12:00:00.000Z"),
+
+          createdBySession: {
+            connect: {
+              id: session.id,
+            },
+          },
+
           options: {
             create: [
               {
@@ -284,12 +340,26 @@ describe("Vote API integration", () => {
     });
 
     it("should reject option from another poll", async () => {
+      const session = await prisma.session.create({
+        data: {
+          tokenHash: "another-poll-creator-session",
+          expiresAt: new Date("2026-12-01T12:00:00.000Z"),
+        },
+      });
+
       const anotherPoll = await prisma.poll.create({
         data: {
           title: "Another poll",
           isAnonymous: false,
           isMultipleChoice: false,
           expiresAt: new Date("2026-12-01T12:00:00.000Z"),
+
+          createdBySession: {
+            connect: {
+              id: session.id,
+            },
+          },
+
           options: {
             create: {
               text: "Another option",

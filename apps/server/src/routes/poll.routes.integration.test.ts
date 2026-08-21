@@ -13,17 +13,17 @@ describe("Poll API integration", () => {
   beforeEach(async () => {
     await prisma.voteOption.deleteMany();
     await prisma.vote.deleteMany();
-    await prisma.session.deleteMany();
-    await prisma.option.deleteMany();
     await prisma.poll.deleteMany();
+    await prisma.option.deleteMany();
+    await prisma.session.deleteMany();
   });
 
   afterAll(async () => {
     await prisma.voteOption.deleteMany();
     await prisma.vote.deleteMany();
-    await prisma.session.deleteMany();
-    await prisma.option.deleteMany();
     await prisma.poll.deleteMany();
+    await prisma.option.deleteMany();
+    await prisma.session.deleteMany();
 
     await prisma.$disconnect();
   });
@@ -154,6 +154,13 @@ describe("Poll API integration", () => {
           isAnonymous: false,
           isMultipleChoice: false,
           expiresAt: new Date("2026-12-01T12:00:00.000Z"),
+
+          createdBySession: {
+            connect: {
+              id: session1.id,
+            },
+          },
+
           options: {
             create: [
               {
@@ -262,12 +269,26 @@ describe("Poll API integration", () => {
     it("should return hasVoted true for a session that has voted", async () => {
       const agent = request.agent(app);
 
+      const session = await prisma.session.create({
+        data: {
+          tokenHash: "test-has-voted-session",
+          expiresAt: new Date("2026-12-01T12:00:00.000Z"),
+        },
+      });
+
       const poll = await prisma.poll.create({
         data: {
           title: "Has voted test",
           isAnonymous: false,
           isMultipleChoice: false,
           expiresAt: new Date("2026-12-01T12:00:00.000Z"),
+
+          createdBySession: {
+            connect: {
+              id: session.id,
+            },
+          },
+
           options: {
             create: [
               {
@@ -298,57 +319,30 @@ describe("Poll API integration", () => {
       expect(response.body.hasVoted).toBe(true);
     });
 
-    it("should return hasVoted true for a session that has voted", async () => {
-      const poll = await prisma.poll.create({
-        data: {
-          title: "Has voted test",
-          isAnonymous: false,
-          isMultipleChoice: false,
-          expiresAt: new Date("2026-12-01T12:00:00.000Z"),
-          options: {
-            create: [
-              {
-                text: "Option 1",
-                position: 0,
-              },
-              {
-                text: "Option 2",
-                position: 1,
-              },
-            ],
-          },
-        },
-        include: {
-          options: true,
-        },
-      });
-
-      const option = poll.options[0];
-
-      const agent = request.agent(app);
-
-      const voteResponse = await agent.post(`/polls/${poll.id}/vote`).send({
-        optionIds: [option.id],
-      });
-
-      expect(voteResponse.status).toBe(201);
-
-      const response = await agent.get(`/polls/${poll.id}`);
-
-      expect(response.status).toBe(200);
-      expect(response.body.hasVoted).toBe(true);
-    });
-
     it("should return hasVoted false for another session", async () => {
       const firstAgent = request.agent(app);
       const secondAgent = request.agent(app);
 
+      const session = await prisma.session.create({
+        data: {
+          tokenHash: "test-another-session",
+          expiresAt: new Date("2026-12-01T12:00:00.000Z"),
+        },
+      });
+
       const poll = await prisma.poll.create({
         data: {
           title: "Has voted test",
           isAnonymous: false,
           isMultipleChoice: false,
           expiresAt: new Date("2026-12-01T12:00:00.000Z"),
+
+          createdBySession: {
+            connect: {
+              id: session.id,
+            },
+          },
+
           options: {
             create: [
               {
@@ -381,6 +375,155 @@ describe("Poll API integration", () => {
 
       expect(firstResponse.body.hasVoted).toBe(true);
       expect(secondResponse.body.hasVoted).toBe(false);
+    });
+  });
+
+  describe("GET /polls/mine", () => {
+    it("should return polls created by the current session", async () => {
+      const agent = request.agent(app);
+
+      const firstPollResponse = await agent.post("/polls").send({
+        title: "My first poll",
+        description: "First poll",
+        isAnonymous: false,
+        isMultipleChoice: false,
+        expiresAt: "2026-12-01T12:00:00.000Z",
+        options: [
+          {
+            text: "Option 1",
+          },
+          {
+            text: "Option 2",
+          },
+        ],
+      });
+
+      expect(firstPollResponse.status).toBe(201);
+
+      const secondPollResponse = await agent.post("/polls").send({
+        title: "My second poll",
+        description: "Second poll",
+        isAnonymous: true,
+        isMultipleChoice: true,
+        expiresAt: "2026-12-01T12:00:00.000Z",
+        options: [
+          {
+            text: "Option A",
+          },
+          {
+            text: "Option B",
+          },
+        ],
+      });
+
+      expect(secondPollResponse.status).toBe(201);
+
+      const response = await agent.get("/polls/mine");
+
+      expect(response.status).toBe(200);
+
+      expect(response.body.polls).toHaveLength(2);
+
+      expect(response.body.polls).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            id: firstPollResponse.body.id,
+            title: "My first poll",
+          }),
+          expect.objectContaining({
+            id: secondPollResponse.body.id,
+            title: "My second poll",
+          }),
+        ])
+      );
+    });
+
+    it("should not return polls created by another session", async () => {
+      const firstAgent = request.agent(app);
+      const secondAgent = request.agent(app);
+
+      const firstPollResponse = await firstAgent.post("/polls").send({
+        title: "First session poll",
+        description: "Private poll",
+        isAnonymous: false,
+        isMultipleChoice: false,
+        expiresAt: "2026-12-01T12:00:00.000Z",
+        options: [
+          {
+            text: "Option 1",
+          },
+          {
+            text: "Option 2",
+          },
+        ],
+      });
+
+      expect(firstPollResponse.status).toBe(201);
+
+      const secondPollResponse = await secondAgent.get("/polls/mine");
+
+      expect(secondPollResponse.status).toBe(200);
+      expect(secondPollResponse.body.polls).toEqual([]);
+    });
+
+    it("should return an empty array when session has no polls", async () => {
+      const agent = request.agent(app);
+
+      const response = await agent.get("/polls/mine");
+
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual({
+        polls: [],
+      });
+    });
+
+    it("should return polls ordered by creation date descending", async () => {
+      const agent = request.agent(app);
+
+      const firstPollResponse = await agent.post("/polls").send({
+        title: "Older poll",
+        description: "Older",
+        isAnonymous: false,
+        isMultipleChoice: false,
+        expiresAt: "2026-12-01T12:00:00.000Z",
+        options: [
+          {
+            text: "Option 1",
+          },
+          {
+            text: "Option 2",
+          },
+        ],
+      });
+
+      expect(firstPollResponse.status).toBe(201);
+
+      const secondPollResponse = await agent.post("/polls").send({
+        title: "Newer poll",
+        description: "Newer",
+        isAnonymous: false,
+        isMultipleChoice: false,
+        expiresAt: "2026-12-01T12:00:00.000Z",
+        options: [
+          {
+            text: "Option A",
+          },
+          {
+            text: "Option B",
+          },
+        ],
+      });
+
+      expect(secondPollResponse.status).toBe(201);
+
+      const response = await agent.get("/polls/mine");
+
+      expect(response.status).toBe(200);
+
+      expect(response.body.polls).toHaveLength(2);
+
+      expect(response.body.polls[0].id).toBe(secondPollResponse.body.id);
+      expect(response.body.polls[1].id).toBe(firstPollResponse.body.id);
     });
   });
 });

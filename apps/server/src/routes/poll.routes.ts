@@ -14,10 +14,16 @@ const router = Router();
 
 const pollController = new PollController();
 
-// Создание нового опроса
-router.post("/", validate(createPollSchema), asyncHandler(pollController.create));
+router.post(
+  "/",
+  sessionMiddleware,
+  requireSession,
+  validate(createPollSchema),
+  asyncHandler(pollController.create)
+);
 
-// Получение опроса с результатами
+router.get("/mine", sessionMiddleware, requireSession, asyncHandler(pollController.findMine));
+
 router.get("/:id", sessionMiddleware, requireSession, asyncHandler(pollController.findById));
 
 export default router;

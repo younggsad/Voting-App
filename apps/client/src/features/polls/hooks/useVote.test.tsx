@@ -3,7 +3,7 @@ import { renderHook, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { createVote } from "../api/polls.api";
-import { pollKeys } from "../query/poll.keys";
+import { pollKeys } from "../types/poll.keys";
 import type { CreateVoteResponse } from "../types";
 import { useVote } from "./useVote";
 

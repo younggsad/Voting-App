@@ -1,0 +1,151 @@
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+
+  padding-top: 28px;
+  border-top: 1px solid var(--color-border);
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.header h3 {
+  margin: 0;
+
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+.header p {
+  margin: 0;
+
+  color: var(--color-text-muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.fields {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.field label {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.field textarea,
+.field input[type="datetime-local"] {
+  width: 100%;
+
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+
+  background: var(--color-surface);
+  color: var(--color-text);
+
+  outline: none;
+
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.field textarea {
+  min-height: 100px;
+  padding: 12px;
+
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.field input[type="datetime-local"] {
+  min-height: 44px;
+  padding: 0 12px;
+}
+
+.field textarea::placeholder {
+  color: var(--color-text-muted);
+}
+
+.field textarea:focus,
+.field input[type="datetime-local"]:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-soft);
+}
+
+.field textarea[aria-invalid="true"],
+.field input[aria-invalid="true"] {
+  border-color: #dc2626;
+}
+
+.error {
+  margin: 0;
+
+  color: #dc2626;
+  font-size: 13px;
+}
+
+.toggles {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.toggle {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+
+  padding: 14px;
+
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+
+  cursor: pointer;
+
+  transition:
+    border-color 150ms ease,
+    background-color 150ms ease;
+}
+
+.toggle:hover {
+  border-color: #cbd5e1;
+  background: #f8fafc;
+}
+
+.toggle input {
+  width: 18px;
+  height: 18px;
+  margin: 1px 0 0;
+
+  accent-color: var(--color-primary);
+}
+
+.toggle span {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.toggle strong {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.toggle small {
+  color: var(--color-text-muted);
+  font-size: 13px;
+  line-height: 1.4;
+}
