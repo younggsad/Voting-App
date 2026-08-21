@@ -2,6 +2,8 @@ import type { FieldError, UseFormRegister } from "react-hook-form";
 
 import type { PollFormValues } from "../schemas/poll.schema";
 
+import styles from "./PollOptionField.module.css";
+
 interface PollOptionFieldProps {
   index: number;
   register: UseFormRegister<PollFormValues>;
@@ -10,7 +12,6 @@ interface PollOptionFieldProps {
   canRemove: boolean;
 }
 
-// Один вариант ответа в форме создания опроса
 export function PollOptionField({
   index,
   register,
@@ -18,15 +19,30 @@ export function PollOptionField({
   onRemove,
   canRemove,
 }: PollOptionFieldProps) {
+  const inputId = `option-${index}`;
+
   return (
-    <div>
-      <label htmlFor={`option-${index}`}>Option {index + 1}</label>
+    <div className={styles.field}>
+      <div className={styles.inputGroup}>
+        <label htmlFor={inputId}>Option {index + 1}</label>
 
-      <input id={`option-${index}`} type="text" {...register(`options.${index}.text`)} />
+        <input
+          id={inputId}
+          type="text"
+          placeholder={`Enter option ${index + 1}`}
+          {...register(`options.${index}.text`)}
+          aria-invalid={Boolean(error)}
+        />
 
-      {error?.message && <p>{error.message}</p>}
+        {error?.message && <p className={styles.error}>{error.message}</p>}
+      </div>
 
-      <button type="button" disabled={!canRemove} onClick={onRemove}>
+      <button
+        className={styles.removeButton}
+        type="button"
+        disabled={!canRemove}
+        onClick={onRemove}
+      >
         Remove
       </button>
     </div>

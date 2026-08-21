@@ -3,7 +3,7 @@ import { z } from "zod";
 export const pollSchema = z.object({
   title: z.string().trim().min(3, "Минимум 3 символа").max(100, "Максимум 100 символов"),
 
-  description: z.string().trim().max(500, "Максимум 500 символов").optional(),
+  description: z.string().trim().max(80, "Максимум 80 символов").optional(),
 
   isAnonymous: z.boolean(),
 

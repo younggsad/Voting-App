@@ -18,9 +18,13 @@ model Poll {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  createdBySessionId String
+  createdBySession   Session @relation(fields: [createdBySessionId], references: [id], onDelete: Cascade)
+
   options Option[]
   votes   Vote[]
 
+  @@index([createdBySessionId])
   @@map("polls")
 }
 
@@ -80,6 +84,7 @@ model Session {
   updatedAt DateTime @updatedAt
 
   votes Vote[]
+  polls Poll[]
 
   @@index([expiresAt])
   @@map("sessions")

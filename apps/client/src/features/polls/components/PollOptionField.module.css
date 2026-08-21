@@ -1,0 +1,110 @@
+.field {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 12px;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.inputGroup label {
+  color: var(--color-text);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.inputGroup input {
+  width: 100%;
+  min-height: 44px;
+  padding: 0 12px;
+
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+
+  background: var(--color-surface);
+  color: var(--color-text);
+
+  outline: none;
+
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.inputGroup input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.inputGroup input:hover {
+  border-color: #cbd5e1;
+}
+
+.inputGroup input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-soft);
+}
+
+.inputGroup input[aria-invalid="true"] {
+  border-color: #dc2626;
+}
+
+.error {
+  margin: 0;
+
+  color: #dc2626;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.removeButton {
+  min-height: 44px;
+  padding: 0 14px;
+
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    border-color 150ms ease,
+    color 150ms ease,
+    background-color 150ms ease;
+}
+
+.removeButton:hover:not(:disabled) {
+  border-color: #fecaca;
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+.removeButton:focus-visible {
+  outline: 3px solid var(--color-primary-soft);
+  outline-offset: 2px;
+}
+
+.removeButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+@media (max-width: 520px) {
+  .field {
+    grid-template-columns: 1fr;
+    align-items: stretch;
+  }
+
+  .removeButton {
+    width: 100%;
+  }
+}

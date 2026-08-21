@@ -14,3 +14,9 @@ export interface Poll {
   hasVoted: boolean;
   options: PollOption[];
 }
+
+export type MyPoll = Omit<Poll, "hasVoted">;
+
+export interface MyPollsResponse {
+  polls: MyPoll[];
+}

@@ -81,7 +81,11 @@ describe("PollForm", () => {
   it("should render the form", () => {
     render(<PollForm />);
 
-    expect(screen.getByRole("heading", { name: "Create poll" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", {
+        name: "Configure your question, options, and voting settings.",
+      })
+    ).toBeInTheDocument();
 
     expect(screen.getByRole("button", { name: "Create poll" })).toBeInTheDocument();
   });

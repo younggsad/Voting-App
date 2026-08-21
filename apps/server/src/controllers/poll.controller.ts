@@ -10,7 +10,7 @@ export class PollController {
     req: Request<Record<string, never>, unknown, CreatePollDto>,
     res: Response
   ): Promise<void> => {
-    const poll = await this.pollService.create(req.body);
+    const poll = await this.pollService.create(req.body, req.sessionId!);
 
     res.status(201).json(poll);
   };
@@ -19,5 +19,13 @@ export class PollController {
     const poll = await this.pollService.findById(req.params.id, req.sessionId!);
 
     res.json(poll);
+  };
+
+  findMine = async (req: Request, res: Response): Promise<void> => {
+    const polls = await this.pollService.findMine(req.sessionId!);
+
+    res.json({
+      polls,
+    });
   };
 }

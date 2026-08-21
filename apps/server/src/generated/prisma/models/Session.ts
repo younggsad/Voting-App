@@ -179,6 +179,7 @@ export type SessionWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"Session"> | Date | string;
   updatedAt?: Prisma.DateTimeFilter<"Session"> | Date | string;
   votes?: Prisma.VoteListRelationFilter;
+  polls?: Prisma.PollListRelationFilter;
 };
 
 export type SessionOrderByWithRelationInput = {
@@ -188,6 +189,7 @@ export type SessionOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder;
   updatedAt?: Prisma.SortOrder;
   votes?: Prisma.VoteOrderByRelationAggregateInput;
+  polls?: Prisma.PollOrderByRelationAggregateInput;
 };
 
 export type SessionWhereUniqueInput = Prisma.AtLeast<
@@ -201,6 +203,7 @@ export type SessionWhereUniqueInput = Prisma.AtLeast<
     createdAt?: Prisma.DateTimeFilter<"Session"> | Date | string;
     updatedAt?: Prisma.DateTimeFilter<"Session"> | Date | string;
     votes?: Prisma.VoteListRelationFilter;
+    polls?: Prisma.PollListRelationFilter;
   },
   "id" | "tokenHash"
 >;
@@ -236,6 +239,7 @@ export type SessionCreateInput = {
   createdAt?: Date | string;
   updatedAt?: Date | string;
   votes?: Prisma.VoteCreateNestedManyWithoutSessionInput;
+  polls?: Prisma.PollCreateNestedManyWithoutCreatedBySessionInput;
 };
 
 export type SessionUncheckedCreateInput = {
@@ -245,6 +249,7 @@ export type SessionUncheckedCreateInput = {
   createdAt?: Date | string;
   updatedAt?: Date | string;
   votes?: Prisma.VoteUncheckedCreateNestedManyWithoutSessionInput;
+  polls?: Prisma.PollUncheckedCreateNestedManyWithoutCreatedBySessionInput;
 };
 
 export type SessionUpdateInput = {
@@ -254,6 +259,7 @@ export type SessionUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   votes?: Prisma.VoteUpdateManyWithoutSessionNestedInput;
+  polls?: Prisma.PollUpdateManyWithoutCreatedBySessionNestedInput;
 };
 
 export type SessionUncheckedUpdateInput = {
@@ -263,6 +269,7 @@ export type SessionUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   votes?: Prisma.VoteUncheckedUpdateManyWithoutSessionNestedInput;
+  polls?: Prisma.PollUncheckedUpdateManyWithoutCreatedBySessionNestedInput;
 };
 
 export type SessionCreateManyInput = {
@@ -318,6 +325,32 @@ export type SessionMinOrderByAggregateInput = {
   updatedAt?: Prisma.SortOrder;
 };
 
+export type SessionCreateNestedOneWithoutPollsInput = {
+  create?: Prisma.XOR<
+    Prisma.SessionCreateWithoutPollsInput,
+    Prisma.SessionUncheckedCreateWithoutPollsInput
+  >;
+  connectOrCreate?: Prisma.SessionCreateOrConnectWithoutPollsInput;
+  connect?: Prisma.SessionWhereUniqueInput;
+};
+
+export type SessionUpdateOneRequiredWithoutPollsNestedInput = {
+  create?: Prisma.XOR<
+    Prisma.SessionCreateWithoutPollsInput,
+    Prisma.SessionUncheckedCreateWithoutPollsInput
+  >;
+  connectOrCreate?: Prisma.SessionCreateOrConnectWithoutPollsInput;
+  upsert?: Prisma.SessionUpsertWithoutPollsInput;
+  connect?: Prisma.SessionWhereUniqueInput;
+  update?: Prisma.XOR<
+    Prisma.XOR<
+      Prisma.SessionUpdateToOneWithWhereWithoutPollsInput,
+      Prisma.SessionUpdateWithoutPollsInput
+    >,
+    Prisma.SessionUncheckedUpdateWithoutPollsInput
+  >;
+};
+
 export type SessionCreateNestedOneWithoutVotesInput = {
   create?: Prisma.XOR<
     Prisma.SessionCreateWithoutVotesInput,
@@ -344,12 +377,77 @@ export type SessionUpdateOneRequiredWithoutVotesNestedInput = {
   >;
 };
 
+export type SessionCreateWithoutPollsInput = {
+  id?: string;
+  tokenHash: string;
+  expiresAt: Date | string;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+  votes?: Prisma.VoteCreateNestedManyWithoutSessionInput;
+};
+
+export type SessionUncheckedCreateWithoutPollsInput = {
+  id?: string;
+  tokenHash: string;
+  expiresAt: Date | string;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutSessionInput;
+};
+
+export type SessionCreateOrConnectWithoutPollsInput = {
+  where: Prisma.SessionWhereUniqueInput;
+  create: Prisma.XOR<
+    Prisma.SessionCreateWithoutPollsInput,
+    Prisma.SessionUncheckedCreateWithoutPollsInput
+  >;
+};
+
+export type SessionUpsertWithoutPollsInput = {
+  update: Prisma.XOR<
+    Prisma.SessionUpdateWithoutPollsInput,
+    Prisma.SessionUncheckedUpdateWithoutPollsInput
+  >;
+  create: Prisma.XOR<
+    Prisma.SessionCreateWithoutPollsInput,
+    Prisma.SessionUncheckedCreateWithoutPollsInput
+  >;
+  where?: Prisma.SessionWhereInput;
+};
+
+export type SessionUpdateToOneWithWhereWithoutPollsInput = {
+  where?: Prisma.SessionWhereInput;
+  data: Prisma.XOR<
+    Prisma.SessionUpdateWithoutPollsInput,
+    Prisma.SessionUncheckedUpdateWithoutPollsInput
+  >;
+};
+
+export type SessionUpdateWithoutPollsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  tokenHash?: Prisma.StringFieldUpdateOperationsInput | string;
+  expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  votes?: Prisma.VoteUpdateManyWithoutSessionNestedInput;
+};
+
+export type SessionUncheckedUpdateWithoutPollsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  tokenHash?: Prisma.StringFieldUpdateOperationsInput | string;
+  expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  votes?: Prisma.VoteUncheckedUpdateManyWithoutSessionNestedInput;
+};
+
 export type SessionCreateWithoutVotesInput = {
   id?: string;
   tokenHash: string;
   expiresAt: Date | string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
+  polls?: Prisma.PollCreateNestedManyWithoutCreatedBySessionInput;
 };
 
 export type SessionUncheckedCreateWithoutVotesInput = {
@@ -358,6 +456,7 @@ export type SessionUncheckedCreateWithoutVotesInput = {
   expiresAt: Date | string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
+  polls?: Prisma.PollUncheckedCreateNestedManyWithoutCreatedBySessionInput;
 };
 
 export type SessionCreateOrConnectWithoutVotesInput = {
@@ -394,6 +493,7 @@ export type SessionUpdateWithoutVotesInput = {
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  polls?: Prisma.PollUpdateManyWithoutCreatedBySessionNestedInput;
 };
 
 export type SessionUncheckedUpdateWithoutVotesInput = {
@@ -402,6 +502,7 @@ export type SessionUncheckedUpdateWithoutVotesInput = {
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  polls?: Prisma.PollUncheckedUpdateManyWithoutCreatedBySessionNestedInput;
 };
 
 /**
@@ -410,12 +511,14 @@ export type SessionUncheckedUpdateWithoutVotesInput = {
 
 export type SessionCountOutputType = {
   votes: number;
+  polls: number;
 };
 
 export type SessionCountOutputTypeSelect<
   ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
   votes?: boolean | SessionCountOutputTypeCountVotesArgs;
+  polls?: boolean | SessionCountOutputTypeCountPollsArgs;
 };
 
 /**
@@ -439,6 +542,15 @@ export type SessionCountOutputTypeCountVotesArgs<
   where?: Prisma.VoteWhereInput;
 };
 
+/**
+ * SessionCountOutputType without action
+ */
+export type SessionCountOutputTypeCountPollsArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
+> = {
+  where?: Prisma.PollWhereInput;
+};
+
 export type SessionSelect<
   ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = runtime.Types.Extensions.GetSelect<
@@ -449,6 +561,7 @@ export type SessionSelect<
     createdAt?: boolean;
     updatedAt?: boolean;
     votes?: boolean | Prisma.Session$votesArgs<ExtArgs>;
+    polls?: boolean | Prisma.Session$pollsArgs<ExtArgs>;
     _count?: boolean | Prisma.SessionCountOutputTypeDefaultArgs<ExtArgs>;
   },
   ExtArgs["result"]["session"]
@@ -498,6 +611,7 @@ export type SessionInclude<
   ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
   votes?: boolean | Prisma.Session$votesArgs<ExtArgs>;
+  polls?: boolean | Prisma.Session$pollsArgs<ExtArgs>;
   _count?: boolean | Prisma.SessionCountOutputTypeDefaultArgs<ExtArgs>;
 };
 export type SessionIncludeCreateManyAndReturn<
@@ -513,6 +627,7 @@ export type $SessionPayload<
   name: "Session";
   objects: {
     votes: Prisma.$VotePayload<ExtArgs>[];
+    polls: Prisma.$PollPayload<ExtArgs>[];
   };
   scalars: runtime.Types.Extensions.GetPayloadResult<
     {
@@ -1042,6 +1157,12 @@ export interface Prisma__SessionClient<
     | runtime.Types.Result.GetResult<Prisma.$VotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>
     | Null
   >;
+  polls<T extends Prisma.Session$pollsArgs<ExtArgs> = {}>(
+    args?: Prisma.Subset<T, Prisma.Session$pollsArgs<ExtArgs>>
+  ): Prisma.PrismaPromise<
+    | runtime.Types.Result.GetResult<Prisma.$PollPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>
+    | Null
+  >;
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1521,6 +1642,32 @@ export type Session$votesArgs<
   take?: number;
   skip?: number;
   distinct?: Prisma.VoteScalarFieldEnum | Prisma.VoteScalarFieldEnum[];
+};
+
+/**
+ * Session.polls
+ */
+export type Session$pollsArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
+> = {
+  /**
+   * Select specific fields to fetch from the Poll
+   */
+  select?: Prisma.PollSelect<ExtArgs> | null;
+  /**
+   * Omit specific fields from the Poll
+   */
+  omit?: Prisma.PollOmit<ExtArgs> | null;
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PollInclude<ExtArgs> | null;
+  where?: Prisma.PollWhereInput;
+  orderBy?: Prisma.PollOrderByWithRelationInput | Prisma.PollOrderByWithRelationInput[];
+  cursor?: Prisma.PollWhereUniqueInput;
+  take?: number;
+  skip?: number;
+  distinct?: Prisma.PollScalarFieldEnum | Prisma.PollScalarFieldEnum[];
 };
 
 /**

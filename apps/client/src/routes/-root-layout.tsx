@@ -1,5 +1,5 @@
-import { Outlet } from "@tanstack/react-router";
+import { AppLayout } from "@/app/layout/AppLayout";
 
 export function RootLayout() {
-  return <Outlet />;
+  return <AppLayout />;
 }
