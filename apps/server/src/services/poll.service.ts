@@ -70,14 +70,6 @@ export class PollService {
       include: pollResultsInclude,
     });
 
-    console.log(
-      "[MINE] polls:",
-      polls.map((poll) => ({
-        id: poll.id,
-        createdBySessionId: poll.createdBySessionId,
-      }))
-    );
-
     return polls.map(mapPollToResponse);
   }
 }

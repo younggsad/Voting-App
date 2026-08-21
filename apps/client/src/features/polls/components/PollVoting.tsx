@@ -5,6 +5,8 @@ import { getApiErrorMessage } from "@/shared/api/api-error-message";
 import { useVote } from "../hooks/useVote";
 import type { Poll } from "../types";
 
+import styles from "./PollVoting.module.css";
+
 interface PollVotingProps {
   poll: Poll;
 }
@@ -41,44 +43,58 @@ export function PollVoting({ poll }: PollVotingProps) {
     : null;
 
   return (
-    <section aria-labelledby="poll-voting-title">
-      <header>
+    <section className={styles.voting} aria-labelledby="poll-voting-title">
+      <header className={styles.header}>
+        <span className={styles.eyebrow}>Vote</span>
+
         <h1 id="poll-voting-title">{poll.title}</h1>
 
         {poll.description && <p>{poll.description}</p>}
       </header>
 
-      <fieldset disabled={voteMutation.isPending}>
-        <legend>
+      <fieldset className={styles.fieldset} disabled={voteMutation.isPending}>
+        <legend className={styles.legend}>
           {poll.isMultipleChoice ? "Select one or more options" : "Select one option"}
         </legend>
 
-        {poll.options.map((option) => {
-          const isSelected = selectedOptions.includes(option.id);
+        <div className={styles.options}>
+          {poll.options.map((option) => {
+            const isSelected = selectedOptions.includes(option.id);
 
-          return (
-            <label key={option.id}>
-              <input
-                type={poll.isMultipleChoice ? "checkbox" : "radio"}
-                name="poll-option"
-                value={option.id}
-                checked={isSelected}
-                onChange={() => handleOptionChange(option.id)}
-              />
+            return (
+              <label
+                key={option.id}
+                className={`${styles.option} ${isSelected ? styles.selected : ""}`}
+              >
+                <input
+                  type={poll.isMultipleChoice ? "checkbox" : "radio"}
+                  name="poll-option"
+                  value={option.id}
+                  checked={isSelected}
+                  onChange={() => handleOptionChange(option.id)}
+                />
 
-              <span>{option.text}</span>
-            </label>
-          );
-        })}
+                <span className={styles.optionContent}>
+                  <span className={styles.optionText}>{option.text}</span>
+
+                  <span className={styles.optionIndicator} aria-hidden="true">
+                    {isSelected && <span />}
+                  </span>
+                </span>
+              </label>
+            );
+          })}
+        </div>
       </fieldset>
 
       {errorMessage && (
-        <p role="alert" aria-live="polite">
+        <p className={styles.error} role="alert" aria-live="polite">
           {errorMessage}
         </p>
       )}
 
       <button
+        className={styles.submitButton}
         type="button"
         disabled={selectedOptions.length === 0 || voteMutation.isPending}
         onClick={handleSubmit}
